@@ -7,9 +7,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * An example command that uses an example subsystem.
@@ -24,31 +27,31 @@ public class ShootCommand extends SequentialCommandGroup {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShootCommand(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
-    m_shooterSubsystem = shooterSubsystem;
-    m_intakeSubsystem = intakeSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem, intakeSubsystem);
-  }
+  public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
+        m_shooterSubsystem = shooterSubsystem;
+        m_intakeSubsystem = intakeSubsystem;
+        // Use addRequirements() here to declare subsystem dependencies.
+        addRequirements(shooterSubsystem, intakeSubsystem);
+        addCommands(
+            new StartEndCommand(
+                () -> m_shooterSubsystem.setShooter(true), 
+                () -> m_intakeSubsystem.setMagazine(true, -1.0), 
+                m_shooterSubsystem, m_intakeSubsystem)
+                .withInterrupt(() -> m_shooterSubsystem.getVelocitySetpoint()),
+            new InstantCommand(() -> m_intakeSubsystem.setIntake(true), m_shooterSubsystem, m_intakeSubsystem),
+            new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
+            new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
+            new InstantCommand(() -> m_intakeSubsystem.ballShot())
+        );           
+    }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
+    @Override
+    public void end(boolean interrupted) {
+        if(interrupted) {
+            new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
+            new InstantCommand(() -> m_intakeSubsystem.setMagazine(false));
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-  }
+        }
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 }
