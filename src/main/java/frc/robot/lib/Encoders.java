@@ -3,6 +3,7 @@ package frc.robot.lib;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import frc.robot.Constants.DrivingConstants;
 
 /**
  * Encoder code
@@ -16,14 +17,6 @@ public class Encoders {
   private VictorSPX leftMotor;
   private VictorSPX rightMotor;
 
-  private double leftTicksPerInch;
-  private double rightTicksPerInch;
-
-  // Drive values
-  double Dp = 0.04;
-  double Di = 0.00002;
-  double Dd = 0;
-
   public Encoders(VictorSPX leftMotor, VictorSPX rightMotor) {
     this.leftMotor = leftMotor;
     this.rightMotor = rightMotor;
@@ -34,50 +27,48 @@ public class Encoders {
     this.leftMotor.setSelectedSensorPosition(0);
     this.rightMotor.setSelectedSensorPosition(0);
 
-    leftMotor.configNominalOutputForward(0, 30);
-    leftMotor.configNominalOutputReverse(0, 30);
-    leftMotor.configPeakOutputForward(1, 30);
-    leftMotor.configPeakOutputReverse(-1, 30);
+    leftMotor.configNominalOutputForward(0);
+    leftMotor.configNominalOutputReverse(0);
+    leftMotor.configPeakOutputForward(1);
+    leftMotor.configPeakOutputReverse(-1);
 
     /**
      * Config the allowable closed-loop error, Closed-Loop output will be
      * neutral within this range. See Table in Section 17.2.1 for native
      * units per rotation.
      */
-    leftMotor.configAllowableClosedloopError(0, 0, 30);
+    leftMotor.configAllowableClosedloopError(0, 0);
 
     /* Config Position Closed Loop gains in slot0, tsypically kF stays zero. */
-    leftMotor.config_kP(0, Dp, 30);
-    leftMotor.config_kI(0, Di, 30);
-    leftMotor.config_kD(0, Dd, 30);
+    leftMotor.config_kP(0, DrivingConstants.kPIDProportional);
+    leftMotor.config_kI(0, DrivingConstants.kPIDIntegral);
+    leftMotor.config_kD(0, DrivingConstants.kPIDDerivative);
 
             /* Config the peak and nominal outputs, 12V means full */
-    rightMotor.configNominalOutputForward(0, 30);
-    rightMotor.configNominalOutputReverse(0, 30);
-    rightMotor.configPeakOutputForward(1, 30);
-    rightMotor.configPeakOutputReverse(-1, 30);
+    rightMotor.configNominalOutputForward(0);
+    rightMotor.configNominalOutputReverse(0);
+    rightMotor.configPeakOutputForward(1);
+    rightMotor.configPeakOutputReverse(-1);
 
     /**
      * Config the allowable closed-loop error, Closed-Loop output will be
      * neutral within this range. See Table in Section 17.2.1 for native
      * units per rotation.
      */
-    rightMotor.configAllowableClosedloopError(0, 0, 30);
+    rightMotor.configAllowableClosedloopError(0, 0);
 
     /* Config Position Closed Loop gains in slot0, tsypically kF stays zero. */
-    rightMotor.config_kP(0, Dp, 30);
-    rightMotor.config_kI(0, Di, 30);
-    rightMotor.config_kD(0, Dd, 30);
+    rightMotor.config_kP(0, DrivingConstants.kPIDProportional);
+    rightMotor.config_kI(0, DrivingConstants.kPIDIntegral);
+    rightMotor.config_kD(0, DrivingConstants.kPIDDerivative);
 
-    leftTicksPerInch = 263839.0/174.0;
-    rightTicksPerInch = 300952.0/169.0;
   }
   public double getLeftDistance() {
-    return (leftMotor.getSelectedSensorPosition() * -1) / leftTicksPerInch;
+    return (leftMotor.getSelectedSensorPosition() * -1) / DrivingConstants.leftTicksPerInch;
   }
 
   public double getRightDistance() {
-    return rightMotor.getSelectedSensorPosition() / rightTicksPerInch;
+    return rightMotor.getSelectedSensorPosition() / DrivingConstants.rightTicksPerInch;
   }
 
   public void reset() {
@@ -93,15 +84,15 @@ public class Encoders {
   //Send ticks required to go a specified distance(For use in PIDs)
   //Returns if it completes within 100 ticks
   public boolean PID(double target) {
-    leftMotor.set(ControlMode.Position, -target*leftTicksPerInch);
-    rightMotor.set(ControlMode.Position, target*rightTicksPerInch);
+    leftMotor.set(ControlMode.Position, -target*DrivingConstants.leftTicksPerInch);
+    rightMotor.set(ControlMode.Position, target*DrivingConstants.rightTicksPerInch);
     System.out.println("In PID: " + target);
     System.out.println("le: " + leftMotor.getClosedLoopError());
     System.out.println("re: " + rightMotor.getClosedLoopError());
     System.out.println("lt: " + leftMotor.getClosedLoopTarget());
     System.out.println("rt: " + rightMotor.getClosedLoopTarget());
-    return (leftMotor.getClosedLoopError() < leftTicksPerInch
-        && rightMotor.getClosedLoopError() < rightTicksPerInch
+    return (leftMotor.getClosedLoopError() < DrivingConstants.leftTicksPerInch
+        && rightMotor.getClosedLoopError() < DrivingConstants.rightTicksPerInch
         && leftMotor.getClosedLoopError() != 0
         && rightMotor.getClosedLoopError() != 0);
   }

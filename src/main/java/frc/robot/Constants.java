@@ -22,6 +22,11 @@ public final class Constants {
     public static final int kRearLeftMotorPort = 1;
     public static final int kFrontRightMotorPort = 4;
     public static final int kRearRightMotorPort = 3;
+    public static final double kPIDProportional = 0.04;
+    public static final double kPIDIntegral = 0.00002;
+    public static final double kPIDDerivative = 0.0;
+    public static final double leftTicksPerInch = 263839.0/174.0;
+    public static final double rightTicksPerInch = 300952.0/169.0;
   }
   /**
    * Constants for the operator interface (OI).
