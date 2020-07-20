@@ -13,14 +13,14 @@ import frc.robot.lib.Encoders;
  * @author Ben Heard and Cole Dewis
  */
 public class DrivingSubsystem extends SubsystemBase {
-  private WPI_VictorSPX m_frontLeftMotor = new WPI_VictorSPX(DrivingConstants.kFrontLeftMotorPort);
-  private WPI_VictorSPX m_rearLeftMotor = new WPI_VictorSPX(DrivingConstants.kRearLeftMotorPort);
-  private WPI_VictorSPX m_frontRightMotor = new WPI_VictorSPX(DrivingConstants.kFrontRightMotorPort);
-  private WPI_VictorSPX m_rearRightMotor = new WPI_VictorSPX(DrivingConstants.kRearRightMotorPort);
-  private SpeedControllerGroup m_rightMotors = new SpeedControllerGroup(m_rearRightMotor, m_frontRightMotor);
-  private SpeedControllerGroup m_leftMotors = new SpeedControllerGroup(m_rearLeftMotor, m_frontLeftMotor);
-  private DifferentialDrive m_driveTrain = new DifferentialDrive(m_leftMotors, m_rightMotors);
-  private Encoders m_driveEncoders = new Encoders(m_rearLeftMotor, m_rearRightMotor);
+  private final WPI_VictorSPX m_frontLeftMotor = new WPI_VictorSPX(DrivingConstants.kFrontLeftMotorPort);
+  private final WPI_VictorSPX m_rearLeftMotor = new WPI_VictorSPX(DrivingConstants.kRearLeftMotorPort);
+  private final WPI_VictorSPX m_frontRightMotor = new WPI_VictorSPX(DrivingConstants.kFrontRightMotorPort);
+  private final WPI_VictorSPX m_rearRightMotor = new WPI_VictorSPX(DrivingConstants.kRearRightMotorPort);
+  private final SpeedControllerGroup m_rightMotors = new SpeedControllerGroup(m_rearRightMotor, m_frontRightMotor);
+  private final SpeedControllerGroup m_leftMotors = new SpeedControllerGroup(m_rearLeftMotor, m_frontLeftMotor);
+  private final DifferentialDrive m_driveTrain = new DifferentialDrive(m_leftMotors, m_rightMotors);
+  private final Encoders m_driveEncoders = new Encoders(m_rearLeftMotor, m_rearRightMotor);
 
   /**
    * Creates a new DrivingSubsystem.
