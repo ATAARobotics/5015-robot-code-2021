@@ -43,12 +43,12 @@ public class RobotContainer {
      // Configure default commands
     // Set the default drive command to split-stick arcade drive
     m_driveSystem.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        new JoystickDriveCommand(
-            m_driveSystem,
-            () -> m_driverController.getY(OIConstants.YControl),
-            () -> m_driverController.getX(OIConstants.XControl)));
+      // A split-stick arcade command, with forward/backward controlled by the left
+      // hand, and turning controlled by the right.
+      new JoystickDriveCommand(
+        m_driveSystem,
+        () -> m_driverController.getY(OIConstants.YControl),
+        () -> m_driverController.getX(OIConstants.XControl)));
   }
 
   /**
