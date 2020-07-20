@@ -23,6 +23,9 @@ public final class Constants {
     public static final int kFrontRightMotorPort = 4;
     public static final int kRearRightMotorPort = 3;
   }
+  /**
+   * Constants for the operator interface (OI).
+    */
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kGunnerControllerPort = 1;
