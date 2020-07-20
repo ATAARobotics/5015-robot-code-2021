@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -21,5 +22,11 @@ public final class Constants {
     public static final int kRearLeftMotorPort = 1;
     public static final int kFrontRightMotorPort = 4;
     public static final int kRearRightMotorPort = 3;
+  }
+  public static final class OIConstants {
+    public static final int kDriverControllerPort = 0;
+    public static final int kGunnerControllerPort = 1;
+    public static final Hand YControl = Hand.kLeft;
+    public static final Hand XControl = Hand.kRight;
   }
 }
