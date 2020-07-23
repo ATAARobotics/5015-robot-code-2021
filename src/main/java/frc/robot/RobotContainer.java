@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 
@@ -65,13 +64,13 @@ public class RobotContainer {
 						new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 		// Dist Shoot
 		new JoystickButton(m_gunnerController, Button.kA.value).whileHeld(new ParallelCommandGroup(
-				new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* distanceInput */)),
+				new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* TODO Distance input */0)),
 				new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
 		// Vision Shoot
 		new JoystickButton(m_gunnerController, Button.kB.value)
-				.whenHeld(new ParallelCommandGroup(new VisionTargetingCommand(m_visionSubsystem),
-						new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* distanceInput */)),
+				.whenHeld(new ParallelCommandGroup(/* new VisionTargetingCommand(m_visionSubsystem), */
+						new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* S */0)),
 						new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
 		// Reset Balls
