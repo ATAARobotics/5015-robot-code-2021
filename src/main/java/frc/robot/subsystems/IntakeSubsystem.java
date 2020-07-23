@@ -7,14 +7,16 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.cuforge.libcu.Lasershark;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase; 
 
 /**
@@ -132,5 +134,25 @@ public class IntakeSubsystem extends SubsystemBase {
     public void reverseIntake(){
         setIntakeSpeed(-intakeSpeed);
     }
+
+
+	public boolean getMagazineFree() {
+		return (getBallsStored() < 5 || safetyOverride);
+	}
+
+
+	public boolean ballDetected() {
+		return (getIntakeDectector() && getBallsStored() != 5);
+	}
+
+
+	public boolean getLastBall() {
+		return(getBallsStored() < 4);
+	}
+
+
+	public void addBall() {
+        ballsStored++;
+	}
     
 }

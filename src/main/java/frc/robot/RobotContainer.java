@@ -37,7 +37,7 @@ public class RobotContainer {
 	private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 	private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-	private final AutoCommand m_autoCommand = new AutoCommand(m_driveSubsystem, m_visionSubsystem, m_shooterSubsystem, m_intakeSubsystem);
+	//private final AutoCommand m_autoCommand = new AutoCommand(m_driveSubsystem, m_visionSubsystem, m_shooterSubsystem, m_intakeSubsystem);
 	
 	XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 	XboxController m_gunnerController = new XboxController(OIConstants.kGunnerControllerPort);
@@ -105,8 +105,8 @@ public class RobotContainer {
 	 *
 	 * @return the command to run in autonomous
 	 */
-	public Command getAutonomousCommand() { // An ExampleCommand will run in autonomous
+	/*public Command getAutonomousCommand() { // An ExampleCommand will run in autonomous
 		return m_autoCommand;
-	}
+	}*/
 
 }
