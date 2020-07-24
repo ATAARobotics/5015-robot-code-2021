@@ -18,7 +18,6 @@ import frc.robot.subsystems.ShooterSubsystem;
  * An example command that uses an example subsystem.
  */
 public class ShootCommand extends SequentialCommandGroup {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final ShooterSubsystem m_shooterSubsystem;
   private final IntakeSubsystem m_intakeSubsystem;
 
