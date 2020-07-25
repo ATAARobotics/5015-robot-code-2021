@@ -30,8 +30,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class IntakeSubsystem extends SubsystemBase {
 
-    private double magazineSpeed = -0.70;
-    private double intakeSpeed = 1.0;
+    private final double magazineIntakeSpeed = -0.70;
+    private final double magazineShootSpeed = -1.00;
+    private final double magazineReverseSpeed = 0.70;
+
+    private final double intakeForwardSpeed = 1.0;
+    private final double intakeReverseSpeed = -1.0;
+    
     private VictorSPX magazineMotor = new VictorSPX(6);
     private VictorSPX intakeMotor = new VictorSPX(5);
     private Lasershark intakeDetector = new Lasershark(5);
@@ -50,48 +55,39 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
 
-    public void setMagazine(boolean running) {
-        setMagazine(running, magazineSpeed);
+    public void setMagazineOff() {
+        magazineMotor.set(ControlMode.PercentOutput, 0.00);
     }
 
-    public void setMagazine(boolean running, double speed) {
-        if (running) {
-            magazineMotor.set(ControlMode.PercentOutput, speed);
-        } else {
-            magazineMotor.set(ControlMode.PercentOutput, 0.0);
+    public void setMagazineOnForIntake() {
+        magazineMotor.set(ControlMode.PercentOutput, magazineIntakeSpeed);
+    }
+
+    public void setMagazineOnForShooting() {
+        magazineMotor.set(ControlMode.PercentOutput, magazineShootSpeed);
+    }
+
+    public void setMagazineReverse() {
+        magazineMotor.set(ControlMode.PercentOutput, magazineReverseSpeed);
+    }
+
+    /**
+     * Sets the amount of balls stored for a user-override.
+     */
+    public void setBallsStored(int ballsStored) {
+        this.ballsStored = ballsStored;
+    }
+
+    public double getBallsStored() {
+        return ballsStored;
+    }
+
+    public void ballShot() {
+        ballsStored--;
+        if (ballsStored < 0) {
+            ballsStored = 0;
         }
     }
-
-    public void reverseMagazine(boolean reverse){
-        if(reverse) {
-            magazineSpeed = Math.abs(magazineSpeed);
-        }
-        else {
-            magazineSpeed = -Math.abs(magazineSpeed);
-        }
-    }
-
-    public void reverseMagazine(){
-        magazineSpeed = -magazineSpeed;
-    }
-
-  /**
-   * Sets the amount of balls stored for a user-override.
-   */
-  public void setBallsStored(int ballsStored) {
-    this.ballsStored = ballsStored;
-  }
-
-  public double getBallsStored() {
-    return ballsStored;
-  }
-
-  public void ballShot() {
-    ballsStored--;
-    if (ballsStored < 0) {
-        ballsStored = 0;
-    }
-}
 
   /**
    * Main update loop for intaking balls automatically.
@@ -111,26 +107,21 @@ public class IntakeSubsystem extends SubsystemBase {
             return false;
         }
     }
-   
-    //Allow code to control intake motor and solenoid
-    public void setIntake(boolean running) {
-        if(running) {
-            intakeMotor.set(ControlMode.PercentOutput, intakeSpeed);
-            intakeControl.set(Value.kForward);
-        } else {
-            intakeMotor.set(ControlMode.PercentOutput, 0.0);
-            intakeControl.set(Value.kReverse);
-        }
+
+    public void setIntakeOff() {
+        intakeMotor.set(ControlMode.PercentOutput, 0.0);
+        intakeControl.set(Value.kReverse);
     }
 
-    public void setIntakeSpeed(double speed){
-        intakeSpeed = speed;
-    }
-    
-    public void reverseIntake(){
-        setIntakeSpeed(-intakeSpeed);
+    public void setIntakeOn() {
+        intakeMotor.set(ControlMode.PercentOutput, intakeForwardSpeed);
+        intakeControl.set(Value.kForward);
     }
 
+    public void setIntakeReverse() {
+        intakeMotor.set(ControlMode.PercentOutput, intakeReverseSpeed);
+        intakeControl.set(Value.kForward);
+    }
 
 	public boolean getMagazineFree() {
 		return (getBallsStored() < 5);
@@ -143,7 +134,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
 	public boolean getLastBall() {
-		return(getBallsStored() < 4);
+		return !(getBallsStored() < 4);
 	}
 
 

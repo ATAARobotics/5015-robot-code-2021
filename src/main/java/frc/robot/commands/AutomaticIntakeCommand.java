@@ -29,25 +29,25 @@ public class AutomaticIntakeCommand extends SequentialCommandGroup {
         addCommands(
             new ConditionalCommand(
                 new ParallelCommandGroup(
-                    new InstantCommand( () -> m_intakeSubsystem.setMagazine(false)),
-                    new InstantCommand( () -> m_intakeSubsystem.setIntake(true))
+                    new InstantCommand( () -> m_intakeSubsystem.setMagazineOnForIntake()),
+                    new InstantCommand( () -> m_intakeSubsystem.setIntakeOn())
                 ),
                 new SequentialCommandGroup(
                     new ParallelCommandGroup(
-                        new InstantCommand( () -> m_intakeSubsystem.setMagazine(false)),
-                        new InstantCommand( () -> m_intakeSubsystem.setIntake(false))
+                        new InstantCommand( () -> m_intakeSubsystem.setMagazineOff()),
+                        new InstantCommand( () -> m_intakeSubsystem.setIntakeOff())
                     ),
                     new InstantCommand( () -> this.cancel())
                 ),
                 () -> m_intakeSubsystem.getMagazineFree()
-            ).beforeStarting(() -> m_intakeSubsystem.setIntakeSpeed(1.0)),
+            ),
             new WaitUntilCommand(() -> m_intakeSubsystem.ballDetected()),
             new ConditionalCommand(
-                new StartEndCommand(() -> m_intakeSubsystem.setMagazine(true),
-                                    () -> m_intakeSubsystem.setMagazine(false)).withTimeout(0.1),
+                new StartEndCommand(() -> m_intakeSubsystem.setMagazineOnForIntake(),
+                                    () -> m_intakeSubsystem.setMagazineOff()).withTimeout(0.1),
                 
-                new StartEndCommand(() -> m_intakeSubsystem.setMagazine(true),
-                                    () -> m_intakeSubsystem.setMagazine(false)).withTimeout(0.2),
+                new StartEndCommand(() -> m_intakeSubsystem.setMagazineOnForIntake(),
+                                    () -> m_intakeSubsystem.setMagazineOff()).withTimeout(0.2),
                 
                 () -> m_intakeSubsystem.getLastBall()
             ),
@@ -69,8 +69,8 @@ public class AutomaticIntakeCommand extends SequentialCommandGroup {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        m_intakeSubsystem.setIntake(false);
-        m_intakeSubsystem.setMagazine(false);
+        m_intakeSubsystem.setIntakeOff();
+        m_intakeSubsystem.setMagazineOff();
     }
 
     // Returns true when the command should end.

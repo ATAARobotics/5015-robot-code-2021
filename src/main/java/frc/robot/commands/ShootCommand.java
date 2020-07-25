@@ -30,10 +30,10 @@ public class ShootCommand extends SequentialCommandGroup {
         addCommands(
             new StartEndCommand(
                 () -> m_shooterSubsystem.setShooter(true), 
-                () -> m_intakeSubsystem.setMagazine(true, -1.0), 
+                () -> m_intakeSubsystem.setMagazineOnForShooting(), 
                 m_shooterSubsystem, m_intakeSubsystem)
                 .withInterrupt(() -> m_shooterSubsystem.atSetpoint()),
-            new InstantCommand(() -> m_intakeSubsystem.setIntake(true), m_shooterSubsystem, m_intakeSubsystem),
+            new InstantCommand(() -> m_intakeSubsystem.setIntakeOn(), m_shooterSubsystem, m_intakeSubsystem),
             new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
             new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
             new InstantCommand(() -> m_intakeSubsystem.ballShot())
@@ -44,7 +44,7 @@ public class ShootCommand extends SequentialCommandGroup {
     public void end(boolean interrupted) {
         if(interrupted) {
             new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
-            new InstantCommand(() -> m_intakeSubsystem.setMagazine(false));
+            new InstantCommand(() -> m_intakeSubsystem.setMagazineOff());
 
         }
     }
