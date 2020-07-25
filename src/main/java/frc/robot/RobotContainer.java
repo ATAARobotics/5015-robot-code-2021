@@ -58,18 +58,21 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Manual Shoot
 		new JoystickButton(m_gunnerController, Button.kY.value)
-				.whileHeld(new SequentialCommandGroup(new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(0.0)),
-						new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
+				.whileHeld(new SequentialCommandGroup(
+					new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(0.0)),
+					new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 		// Dist Shoot
-		new JoystickButton(m_gunnerController, Button.kA.value).whileHeld(new ParallelCommandGroup(
+		new JoystickButton(m_gunnerController, Button.kA.value).whileHeld(
+			new ParallelCommandGroup(
 				new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* TODO Distance input */0)),
 				new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
 		// Vision Shoot
 		new JoystickButton(m_gunnerController, Button.kB.value)
-				.whenHeld(new ParallelCommandGroup(/* new VisionTargetingCommand(m_visionSubsystem), */
-						new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* S */0)),
-						new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
+				.whenHeld(new ParallelCommandGroup(
+					/* new VisionTargetingCommand(m_visionSubsystem), */
+					new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* S */0)),
+					new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
 		// Reset Balls
 		new JoystickButton(m_gunnerController, Button.kStart.value)
@@ -78,20 +81,18 @@ public class RobotContainer {
 		// Magazine Reverse
 		new JoystickButton(m_gunnerController, Button.kBack.value)
 				.whenPressed(
-						new SequentialCommandGroup(new InstantCommand(() -> m_intakeSubsystem.reverseMagazine(true)),
-								new InstantCommand(() -> m_intakeSubsystem.setMagazine(true))))
+						new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()))
 				.whenReleased(
-						new SequentialCommandGroup(new InstantCommand(() -> m_intakeSubsystem.reverseMagazine(false)),
-								new InstantCommand(() -> m_intakeSubsystem.setMagazine(false))));
+						new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
 
 		// Intake Reverse
 		new JoystickButton(m_gunnerController, Button.kX.value)
 				.whenPressed(
-						new SequentialCommandGroup(new InstantCommand(() -> m_intakeSubsystem.reverseMagazine(true)),
-								new InstantCommand(() -> m_intakeSubsystem.setMagazine(true))))
+						new SequentialCommandGroup(
+							new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()),
+							new InstantCommand(() -> m_intakeSubsystem.setIntakeReverse())))
 				.whenReleased(
-						new SequentialCommandGroup(new InstantCommand(() -> m_intakeSubsystem.reverseMagazine(false)),
-								new InstantCommand(() -> m_intakeSubsystem.setMagazine(false))));
+						new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
 
 		// Intake
 		new JoystickButton(m_gunnerController, Button.kA.value).toggleWhenActive(new AutomaticIntakeCommand(m_intakeSubsystem));
