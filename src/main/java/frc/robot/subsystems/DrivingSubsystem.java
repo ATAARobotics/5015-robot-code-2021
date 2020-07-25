@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import frc.robot.Constants.DrivingConstants;
+import frc.robot.Ports;
 import frc.robot.lib.Encoders;
 
 /**
@@ -13,10 +13,10 @@ import frc.robot.lib.Encoders;
  * @author Ben Heard and Cole Dewis
  */
 public class DrivingSubsystem extends SubsystemBase {
-   private final WPI_VictorSPX m_frontLeftMotor = new WPI_VictorSPX(DrivingConstants.kFrontLeftMotorPort);
-   private final WPI_VictorSPX m_rearLeftMotor = new WPI_VictorSPX(DrivingConstants.kRearLeftMotorPort);
-   private final WPI_VictorSPX m_frontRightMotor = new WPI_VictorSPX(DrivingConstants.kFrontRightMotorPort);
-   private final WPI_VictorSPX m_rearRightMotor = new WPI_VictorSPX(DrivingConstants.kRearRightMotorPort);
+   private final WPI_VictorSPX m_frontLeftMotor = new WPI_VictorSPX(Ports.kFrontLeftMotorPort);
+   private final WPI_VictorSPX m_rearLeftMotor = new WPI_VictorSPX(Ports.kRearLeftMotorPort);
+   private final WPI_VictorSPX m_frontRightMotor = new WPI_VictorSPX(Ports.kFrontRightMotorPort);
+   private final WPI_VictorSPX m_rearRightMotor = new WPI_VictorSPX(Ports.kRearRightMotorPort);
    private final SpeedControllerGroup m_rightMotors = new SpeedControllerGroup(m_rearRightMotor, m_frontRightMotor);
    private final SpeedControllerGroup m_leftMotors = new SpeedControllerGroup(m_rearLeftMotor, m_frontLeftMotor);
    private final DifferentialDrive m_driveTrain = new DifferentialDrive(m_leftMotors, m_rightMotors);
