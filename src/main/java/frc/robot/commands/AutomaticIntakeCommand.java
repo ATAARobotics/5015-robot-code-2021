@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /**
- * An example command that uses an example subsystem.
+ * A command that uses the intake subsystem to automatically intake and index balls.
  */
-public class IntakeCommand extends SequentialCommandGroup {
+public class AutomaticIntakeCommand extends SequentialCommandGroup {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final IntakeSubsystem m_intakeSubsystem;
 
@@ -27,7 +27,7 @@ public class IntakeCommand extends SequentialCommandGroup {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+    public AutomaticIntakeCommand(IntakeSubsystem intakeSubsystem) {
         m_intakeSubsystem = intakeSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(intakeSubsystem);

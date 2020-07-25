@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -19,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.AutomaticIntakeCommand;
 import frc.robot.commands.ShootCommand;
 
 import frc.robot.Constants.OIConstants;
@@ -36,15 +35,14 @@ public class RobotContainer {
 	private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 	private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-	//private final AutoCommand m_autoCommand = new AutoCommand(m_driveSubsystem, m_visionSubsystem, m_shooterSubsystem, m_intakeSubsystem);
-	
 	XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 	XboxController m_gunnerController = new XboxController(OIConstants.kGunnerControllerPort);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
-  //TODO: Add missing components such as Auto, Vision and Drive
+	  
+	 //TODO: Add missing components such as Auto, Vision and Drive
 
 	public RobotContainer() {
 		// Configure the button bindings
@@ -96,16 +94,6 @@ public class RobotContainer {
 								new InstantCommand(() -> m_intakeSubsystem.setMagazine(false))));
 
 		// Intake
-		new JoystickButton(m_gunnerController, Button.kA.value).toggleWhenActive(new IntakeCommand(m_intakeSubsystem));
+		new JoystickButton(m_gunnerController, Button.kA.value).toggleWhenActive(new AutomaticIntakeCommand(m_intakeSubsystem));
 	}
-
-	/**
-	 * Use this to pass the autonomous command to the main {@link Robot} class.
-	 *
-	 * @return the command to run in autonomous
-	 */
-	/*public Command getAutonomousCommand() { // An ExampleCommand will run in autonomous
-		return m_autoCommand;
-	}*/
-
 }

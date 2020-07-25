@@ -23,9 +23,6 @@ import frc.robot.Constants.ShooterConstants;
  */
 public class ShooterSubsystem extends SubsystemBase {
 
-    // private final double beltCircumference = 0.0 * Math.PI;
-    // private final double magazineTicksPerBall = 0.0 / beltCircumference * 7.5;
-
     private double shooterSpeed = ShooterConstants.kDefaultShooterSpeed;
     private double manualShooterSpeed = ShooterConstants.kDefaultShooterSpeed;
     private CANSparkMax shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorPort, MotorType.kBrushless);
@@ -65,12 +62,6 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooting Manual Shooter Speed", manualShooterSpeed);
 
     }
-
-    /**
-     * Sets the intake on or off, uses intakeSpeed for the power if on.
-     * 
-     * @param running Whether the intake wheels should be spinning
-     */
 
     @Override
     public void periodic() {
@@ -146,7 +137,7 @@ public class ShooterSubsystem extends SubsystemBase {
 		return setPoint;
 	}
 
-	public boolean getVelocitySetpoint() {
+	public boolean atSetpoint() {
 		return getVelocity() >= getSetpoint();
 	}
 

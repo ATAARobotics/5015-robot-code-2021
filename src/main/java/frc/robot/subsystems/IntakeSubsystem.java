@@ -30,9 +30,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class IntakeSubsystem extends SubsystemBase {
 
-    // private final double beltCircumference = 0.0 * Math.PI;
-    // private final double magazineTicksPerBall = 0.0 / beltCircumference * 7.5;
-
     private double magazineSpeed = -0.70;
     private double intakeSpeed = 1.0;
     private VictorSPX magazineMotor = new VictorSPX(6);
@@ -41,11 +38,14 @@ public class IntakeSubsystem extends SubsystemBase {
     private DoubleSolenoid intakeControl = new DoubleSolenoid(6, 7);
 
     private double ballsStored = 3;
-    private boolean safetyOverride = false;
 
 
     public IntakeSubsystem() {
-        SmartDashboard.putBoolean("Override", safetyOverride);
+        SmartDashboard.putNumber("Balls Stored", ballsStored);
+    }
+
+    @Override
+    public void periodic() {
         SmartDashboard.putNumber("Balls Stored", ballsStored);
     }
 
@@ -87,9 +87,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void ballShot() {
-    if (ballsStored >= 1) {
-        ballsStored--;
-    }
+    ballsStored--;
     if (ballsStored < 0) {
         ballsStored = 0;
     }
@@ -135,7 +133,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
 	public boolean getMagazineFree() {
-		return (getBallsStored() < 5 || safetyOverride);
+		return (getBallsStored() < 5);
 	}
 
 
@@ -151,6 +149,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
 	public void addBall() {
         ballsStored++;
+        if (ballsStored > 5) {
+            ballsStored = 5;
+
+        }
 	}
     
 }

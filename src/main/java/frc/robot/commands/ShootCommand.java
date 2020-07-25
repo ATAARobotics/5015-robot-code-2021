@@ -15,19 +15,19 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
- * An example command that uses an example subsystem.
+ * * A command that uses the shooter and intake subsystems to automatically shoot balls.
+
  */
 public class ShootCommand extends SequentialCommandGroup {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final ShooterSubsystem m_shooterSubsystem;
-  private final IntakeSubsystem m_intakeSubsystem;
+    private final ShooterSubsystem m_shooterSubsystem;
+    private final IntakeSubsystem m_intakeSubsystem;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
+    /**
+    * Creates a new ExampleCommand.
+    *
+    * @param subsystem The subsystem used by this command.
+    */
+    public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
         m_shooterSubsystem = shooterSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
@@ -37,7 +37,7 @@ public class ShootCommand extends SequentialCommandGroup {
                 () -> m_shooterSubsystem.setShooter(true), 
                 () -> m_intakeSubsystem.setMagazine(true, -1.0), 
                 m_shooterSubsystem, m_intakeSubsystem)
-                .withInterrupt(() -> m_shooterSubsystem.getVelocitySetpoint()),
+                .withInterrupt(() -> m_shooterSubsystem.atSetpoint()),
             new InstantCommand(() -> m_intakeSubsystem.setIntake(true), m_shooterSubsystem, m_intakeSubsystem),
             new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
             new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
