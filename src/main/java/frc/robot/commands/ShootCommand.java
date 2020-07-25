@@ -15,38 +15,36 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
- * * A command that uses the shooter and intake subsystems to automatically shoot balls.
-
+ * * A command that uses the shooter and intake subsystems to automatically
+ * shoot balls.
+ * 
  */
 public class ShootCommand extends SequentialCommandGroup {
-    private final ShooterSubsystem m_shooterSubsystem;
-    private final IntakeSubsystem m_intakeSubsystem;
+   private final ShooterSubsystem m_shooterSubsystem;
+   private final IntakeSubsystem m_intakeSubsystem;
 
-    public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
-        m_shooterSubsystem = shooterSubsystem;
-        m_intakeSubsystem = intakeSubsystem;
-        // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(shooterSubsystem, intakeSubsystem);
-        addCommands(
-            new StartEndCommand(
-                () -> m_shooterSubsystem.setShooter(true), 
-                () -> m_intakeSubsystem.setMagazineOnForShooting(), 
-                m_shooterSubsystem, m_intakeSubsystem)
-                .withInterrupt(() -> m_shooterSubsystem.atSetpoint()),
+   public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
+      m_shooterSubsystem = shooterSubsystem;
+      m_intakeSubsystem = intakeSubsystem;
+      // Use addRequirements() here to declare subsystem dependencies.
+      addRequirements(shooterSubsystem, intakeSubsystem);
+      addCommands(
+            new StartEndCommand(() -> m_shooterSubsystem.setShooter(true),
+                  () -> m_intakeSubsystem.setMagazineOnForShooting(), m_shooterSubsystem, m_intakeSubsystem)
+                        .withInterrupt(() -> m_shooterSubsystem.atSetpoint()),
             new InstantCommand(() -> m_intakeSubsystem.setIntakeOn(), m_shooterSubsystem, m_intakeSubsystem),
             new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
             new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
-            new InstantCommand(() -> m_intakeSubsystem.ballShot())
-        );           
-    }
+            new InstantCommand(() -> m_intakeSubsystem.ballShot()));
+   }
 
-    @Override
-    public void end(boolean interrupted) {
-        if(interrupted) {
-            new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
-            new InstantCommand(() -> m_intakeSubsystem.setMagazineOff());
+   @Override
+   public void end(boolean interrupted) {
+      if (interrupted) {
+         new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
+         new InstantCommand(() -> m_intakeSubsystem.setMagazineOff());
 
-        }
-    }
+      }
+   }
 
 }

@@ -31,70 +31,63 @@ import frc.robot.Constants.OIConstants;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-	// The robot's subsystems and commands are defined here...
-	private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-	private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+   // The robot's subsystems and commands are defined here...
+   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-	XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-	XboxController m_gunnerController = new XboxController(OIConstants.kGunnerControllerPort);
+   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+   XboxController m_gunnerController = new XboxController(OIConstants.kGunnerControllerPort);
 
-	/**
-	 * The container for the robot. Contains subsystems, OI devices, and commands.
-	 */
-	  
-	 //TODO: Add missing components such as Auto, Vision and Drive
+   /**
+    * The container for the robot. Contains subsystems, OI devices, and commands.
+    */
 
-	public RobotContainer() {
-		// Configure the button bindings
-		configureButtonBindings();
-	}
+   // TODO: Add missing components such as Auto, Vision and Drive
 
-	/**
-	 * Use this method to define your button->command mappings. Buttons can be
-	 * created by instantiating a {@link GenericHID} or one of its subclasses
-	 * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-	 */
-	private void configureButtonBindings() {
-		// Manual Shoot
-		new JoystickButton(m_gunnerController, Button.kY.value)
-				.whileHeld(new SequentialCommandGroup(
-					new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(0.0)),
-					new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
-		// Dist Shoot
-		new JoystickButton(m_gunnerController, Button.kA.value).whileHeld(
-			new ParallelCommandGroup(
-				new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* TODO Distance input */0)),
-				new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
+   public RobotContainer() {
+      // Configure the button bindings
+      configureButtonBindings();
+   }
 
-		// Vision Shoot
-		new JoystickButton(m_gunnerController, Button.kB.value)
-				.whenHeld(new ParallelCommandGroup(
-					/* new VisionTargetingCommand(m_visionSubsystem), */
-					new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* S */0)),
-					new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
+   /**
+    * Use this method to define your button->command mappings. Buttons can be
+    * created by instantiating a {@link GenericHID} or one of its subclasses
+    * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+    */
+   private void configureButtonBindings() {
+      // Manual Shoot
+      new JoystickButton(m_gunnerController, Button.kY.value)
+            .whileHeld(new SequentialCommandGroup(new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(0.0)),
+                  new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
+      // Dist Shoot
+      new JoystickButton(m_gunnerController, Button.kA.value).whileHeld(new ParallelCommandGroup(
+            new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* TODO Distance input */0)),
+            new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
-		// Reset Balls
-		new JoystickButton(m_gunnerController, Button.kStart.value)
-				.whenReleased(new InstantCommand(() -> m_intakeSubsystem.setBallsStored(0)));
+      // Vision Shoot
+      new JoystickButton(m_gunnerController, Button.kB.value).whenHeld(new ParallelCommandGroup(
+            /* new VisionTargetingCommand(m_visionSubsystem), */
+            new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* S */0)),
+            new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
-		// Magazine Reverse
-		new JoystickButton(m_gunnerController, Button.kBack.value)
-				.whenPressed(
-						new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()))
-				.whenReleased(
-						new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
+      // Reset Balls
+      new JoystickButton(m_gunnerController, Button.kStart.value)
+            .whenReleased(new InstantCommand(() -> m_intakeSubsystem.setBallsStored(0)));
 
-		// Intake Reverse
-		new JoystickButton(m_gunnerController, Button.kX.value)
-				.whenPressed(
-						new SequentialCommandGroup(
-							new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()),
-							new InstantCommand(() -> m_intakeSubsystem.setIntakeReverse())))
-				.whenReleased(
-						new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
+      // Magazine Reverse
+      new JoystickButton(m_gunnerController, Button.kBack.value)
+            .whenPressed(new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()))
+            .whenReleased(new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
 
-		// Intake
-		new JoystickButton(m_gunnerController, Button.kA.value).toggleWhenActive(new AutomaticIntakeCommand(m_intakeSubsystem));
-	}
+      // Intake Reverse
+      new JoystickButton(m_gunnerController, Button.kX.value)
+            .whenPressed(new SequentialCommandGroup(new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()),
+                  new InstantCommand(() -> m_intakeSubsystem.setIntakeReverse())))
+            .whenReleased(new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
+
+      // Intake
+      new JoystickButton(m_gunnerController, Button.kA.value)
+            .toggleWhenActive(new AutomaticIntakeCommand(m_intakeSubsystem));
+   }
 }

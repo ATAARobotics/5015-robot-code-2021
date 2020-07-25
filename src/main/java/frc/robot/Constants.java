@@ -18,43 +18,43 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final class ShooterConstants {
-        // Ports
-        public static final int kLaserSharkPort = 6;
-        public static final int kShooterMotorPort = 7;
-        // Defaults
-        public static final double kDefaultShooterSpeed = 0.82;
-        public static final int kDefaultBallsStored = 3;
-        // Constants
-        public static final double kBallDetectionDistance = 7.0;
-        // PID Values
-        public static final double kP = 0.0007;
-        public static final double kI = 0.0000002;
-        public static final double kD = 0.1;
-        public static final double kIz = 0;
-        public static final double kFF = 0.00015;
-        public static final double kMaxOutput = 1;
-        public static final double kMinOutput = 0;
-        public static final double kMaxRPM = 5600;
+   public static final class ShooterConstants {
+      // Ports
+      public static final int kLaserSharkPort = 6;
+      public static final int kShooterMotorPort = 7;
+      // Defaults
+      public static final double kDefaultShooterSpeed = 0.82;
+      public static final int kDefaultBallsStored = 3;
+      // Constants
+      public static final double kBallDetectionDistance = 7.0;
+      // PID Values
+      public static final double kP = 0.0007;
+      public static final double kI = 0.0000002;
+      public static final double kD = 0.1;
+      public static final double kIz = 0;
+      public static final double kFF = 0.00015;
+      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = 0;
+      public static final double kMaxRPM = 5600;
 
-    }
+   }
 
-    public static final class IntakeConstants {
-        // Ports
-        public static final int kMagazineMotorPort = 6;
-        public static final int kintakeMotorPort = 5;
-        public static final int kLasersharkPort = 5;
-        public static final int[] kSolenoidPorts = new int[]{6, 7};
-        // Defaults
-        public static final double kDefaultMagazineSpeed = -0.7;
-        public static final double kDefaultIntakeSpeed = 1.0;
-        public static final int kDefaultBallsStored = 3;
-        // Constants
-        public static final double kBallDetectionDistance = 7.0;
-    }
+   public static final class IntakeConstants {
+      // Ports
+      public static final int kMagazineMotorPort = 6;
+      public static final int kintakeMotorPort = 5;
+      public static final int kLasersharkPort = 5;
+      public static final int[] kSolenoidPorts = new int[] { 6, 7 };
+      // Defaults
+      public static final double kDefaultMagazineSpeed = -0.7;
+      public static final double kDefaultIntakeSpeed = 1.0;
+      public static final int kDefaultBallsStored = 3;
+      // Constants
+      public static final double kBallDetectionDistance = 7.0;
+   }
 
-    public static final class OIConstants {
-        public static final int kDriverControllerPort = 0;
-        public static final int kGunnerControllerPort = 1;
-    }
+   public static final class OIConstants {
+      public static final int kDriverControllerPort = 0;
+      public static final int kGunnerControllerPort = 1;
+   }
 }
