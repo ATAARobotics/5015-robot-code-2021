@@ -22,11 +22,6 @@ public class ShootCommand extends SequentialCommandGroup {
     private final ShooterSubsystem m_shooterSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
 
-    /**
-    * Creates a new ExampleCommand.
-    *
-    * @param subsystem The subsystem used by this command.
-    */
     public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
         m_shooterSubsystem = shooterSubsystem;
         m_intakeSubsystem = intakeSubsystem;

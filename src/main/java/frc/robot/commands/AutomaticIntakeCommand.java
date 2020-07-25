@@ -22,11 +22,6 @@ public class AutomaticIntakeCommand extends SequentialCommandGroup {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final IntakeSubsystem m_intakeSubsystem;
 
-    /**
-     * Creates a new ExampleCommand.
-     *
-     * @param subsystem The subsystem used by this command.
-     */
     public AutomaticIntakeCommand(IntakeSubsystem intakeSubsystem) {
         m_intakeSubsystem = intakeSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
