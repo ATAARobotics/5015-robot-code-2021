@@ -80,11 +80,11 @@ public class Encoders {
    public void reset() {
       leftMotor.setSelectedSensorPosition(0);
       rightMotor.setSelectedSensorPosition(0);
-      System.out.println("Did reset");
-      System.out.println("le: " + leftMotor.getClosedLoopError());
-      System.out.println("re: " + rightMotor.getClosedLoopError());
-      System.out.println("lt: " + leftMotor.getClosedLoopTarget());
-      System.out.println("rt: " + rightMotor.getClosedLoopTarget());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "Did reset");
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "le: " + leftMotor.getClosedLoopError());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "re: " + rightMotor.getClosedLoopError());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "lt: " + leftMotor.getClosedLoopTarget());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "rt: " + rightMotor.getClosedLoopTarget());
    }
 
    //Send ticks required to go a specified distance(For use in PIDs)
@@ -92,11 +92,11 @@ public class Encoders {
    public boolean PID(double target) {
       leftMotor.set(ControlMode.Position, -target*EncoderConstants.leftTicksPerInch);
       rightMotor.set(ControlMode.Position, target*EncoderConstants.rightTicksPerInch);
-      System.out.println("In PID: " + target);
-      System.out.println("le: " + leftMotor.getClosedLoopError());
-      System.out.println("re: " + rightMotor.getClosedLoopError());
-      System.out.println("lt: " + leftMotor.getClosedLoopTarget());
-      System.out.println("rt: " + rightMotor.getClosedLoopTarget());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "In PID: " + target);
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "le: " + leftMotor.getClosedLoopError());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "re: " + rightMotor.getClosedLoopError());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "lt: " + leftMotor.getClosedLoopTarget());
+      FancyLog.Log(FancyLog.LogLevel.LOG, FancyLog.LogSystem.SUBSYSTEM_DRIVE, "rt: " + rightMotor.getClosedLoopTarget());
       return (leftMotor.getClosedLoopError() < EncoderConstants.leftTicksPerInch
             && rightMotor.getClosedLoopError() < EncoderConstants.rightTicksPerInch
             && leftMotor.getClosedLoopError() != 0
