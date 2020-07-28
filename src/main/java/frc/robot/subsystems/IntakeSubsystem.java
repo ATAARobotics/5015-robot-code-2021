@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Ports;
 
 /**
  * Ball intake code
@@ -28,20 +29,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * intake, but not too many balls.
  */
 public class IntakeSubsystem extends SubsystemBase {
+   public static final class IntakeConstants {
+      // Defaults
+      public static final int kDefaultBallsStored = 3;
+      // Constants
+      public static final double kBallDetectionDistance = 5.0;
+      private final static double kMagazineIntakeSpeed = -0.70;
+      private final static double kMagazineShootSpeed = -1.00;
+      private final static double kMagazineReverseSpeed = 0.70;
 
-   private final double magazineIntakeSpeed = -0.70;
-   private final double magazineShootSpeed = -1.00;
-   private final double magazineReverseSpeed = 0.70;
+      private final static double kIntakeForwardSpeed = 1.0;
+      private final static double kIntakeReverseSpeed = -1.0;
+      private final static double kMaxBallsStored = 5.0;
+   }
 
-   private final double intakeForwardSpeed = 1.0;
-   private final double intakeReverseSpeed = -1.0;
+   private VictorSPX magazineMotor = new VictorSPX(Ports.kMagazineMotorPort);
+   private VictorSPX intakeMotor = new VictorSPX(Ports.kintakeMotorPort);
+   private Lasershark intakeDetector = new Lasershark(Ports.kIntakeLaserSharkPort);
+   private DoubleSolenoid intakeControl = new DoubleSolenoid(Ports.kIntakeSolenoidPorts[0],
+         Ports.kIntakeSolenoidPorts[1]);
 
-   private VictorSPX magazineMotor = new VictorSPX(6);
-   private VictorSPX intakeMotor = new VictorSPX(5);
-   private Lasershark intakeDetector = new Lasershark(5);
-   private DoubleSolenoid intakeControl = new DoubleSolenoid(6, 7);
-
-   private double ballsStored = 3;
+   private double ballsStored = IntakeConstants.kDefaultBallsStored;
 
    public IntakeSubsystem() {
       SmartDashboard.putNumber("Balls Stored", ballsStored);
@@ -57,15 +65,15 @@ public class IntakeSubsystem extends SubsystemBase {
    }
 
    public void setMagazineOnForIntake() {
-      magazineMotor.set(ControlMode.PercentOutput, magazineIntakeSpeed);
+      magazineMotor.set(ControlMode.PercentOutput, IntakeConstants.kMagazineIntakeSpeed);
    }
 
    public void setMagazineOnForShooting() {
-      magazineMotor.set(ControlMode.PercentOutput, magazineShootSpeed);
+      magazineMotor.set(ControlMode.PercentOutput, IntakeConstants.kMagazineShootSpeed);
    }
 
    public void setMagazineReverse() {
-      magazineMotor.set(ControlMode.PercentOutput, magazineReverseSpeed);
+      magazineMotor.set(ControlMode.PercentOutput, IntakeConstants.kMagazineReverseSpeed);
    }
 
    /**
@@ -91,7 +99,7 @@ public class IntakeSubsystem extends SubsystemBase {
     */
    public boolean getIntakeDectector() {
 
-      if (intakeDetector.getDistanceInches() < 5.0 && intakeDetector.getDistanceInches() != 0.0) {
+      if (intakeDetector.getDistanceInches() < IntakeConstants.kBallDetectionDistance && intakeDetector.getDistanceInches() != 0.0) {
 
          return true;
 
@@ -111,31 +119,31 @@ public class IntakeSubsystem extends SubsystemBase {
    }
 
    public void setIntakeOn() {
-      intakeMotor.set(ControlMode.PercentOutput, intakeForwardSpeed);
+      intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.kIntakeForwardSpeed);
       intakeControl.set(Value.kForward);
    }
 
    public void setIntakeReverse() {
-      intakeMotor.set(ControlMode.PercentOutput, intakeReverseSpeed);
+      intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.kIntakeReverseSpeed);
       intakeControl.set(Value.kForward);
    }
 
    public boolean getMagazineFree() {
-      return (getBallsStored() < 5);
+      return (getBallsStored() < IntakeConstants.kMaxBallsStored);
    }
 
    public boolean ballDetected() {
-      return (getIntakeDectector() && getBallsStored() != 5);
+      return (getIntakeDectector() && getBallsStored() != IntakeConstants.kMaxBallsStored);
    }
 
    public boolean getLastBall() {
-      return !(getBallsStored() < 4);
+      return !(getBallsStored() < IntakeConstants.kMaxBallsStored-1);
    }
 
    public void addBall() {
       ballsStored++;
-      if (ballsStored > 5) {
-         ballsStored = 5;
+      if (ballsStored > IntakeConstants.kMaxBallsStored) {
+         ballsStored = IntakeConstants.kMaxBallsStored;
 
       }
    }

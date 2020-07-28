@@ -21,8 +21,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.commands.AutomaticIntakeCommand;
 import frc.robot.commands.ShootCommand;
 
-import frc.robot.Constants.OIConstants;
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -35,8 +33,8 @@ public class RobotContainer {
    private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-   XboxController m_gunnerController = new XboxController(OIConstants.kGunnerControllerPort);
+   XboxController m_driverController = new XboxController(Ports.kDriverControllerPort);
+   XboxController m_gunnerController = new XboxController(Ports.kGunnerControllerPort);
 
    /**
     * The container for the robot. Contains subsystems, OI devices, and commands.

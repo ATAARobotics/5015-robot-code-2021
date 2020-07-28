@@ -9,7 +9,7 @@ import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.Ports;
 
 /**
  * Ball shooter code
@@ -23,12 +23,30 @@ import frc.robot.Constants.ShooterConstants;
  */
 public class ShooterSubsystem extends SubsystemBase {
 
+   public static final class ShooterConstants {
+      // Defaults
+      public static final double kDefaultShooterSpeed = 0.82;
+      public static final int kDefaultBallsStored = 3;
+      // Constants
+      public static final double kBallDetectionDistance = 7.0;
+      // PID Values
+      public static final double kP = 0.0007;
+      public static final double kI = 0.0000002;
+      public static final double kD = 0.1;
+      public static final double kIz = 0;
+      public static final double kFF = 0.00015;
+      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = 0;
+      public static final double kMaxRPM = 5600;
+
+   }
+
    private double shooterSpeed = ShooterConstants.kDefaultShooterSpeed;
    private double manualShooterSpeed = ShooterConstants.kDefaultShooterSpeed;
-   private CANSparkMax shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorPort, MotorType.kBrushless);
+   private CANSparkMax shooterMotor = new CANSparkMax(Ports.kShooterMotorPort, MotorType.kBrushless);
    private CANEncoder shooterEncoder = new CANEncoder(shooterMotor);
    private CANPIDController shooterController = shooterMotor.getPIDController();
-   private Lasershark shootDetector = new Lasershark(ShooterConstants.kLaserSharkPort);
+   private Lasershark shootDetector = new Lasershark(Ports.kShooterLaserSharkPort);
 
    private double setPoint = 0;
    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
