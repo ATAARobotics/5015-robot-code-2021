@@ -155,9 +155,10 @@ public class ShooterSubsystem extends SubsystemBase {
       return setPoint;
    }
 
-   public boolean atSetpoint() {
-      return getVelocity() >= getSetpoint();
-   }
+   public boolean nearSetpoint() {
+      double errorPercent = Math.abs(getVelocity() - setPoint) / setPoint;
+      return errorPercent < 0.01;
+  }
 
    public boolean ballDetected() {
       return shootDetector.getDistanceInches() < ShooterConstants.kBallDetectionDistance;

@@ -17,7 +17,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 /**
  * * A command that uses the shooter and intake subsystems to automatically
  * shoot balls.
- * 
+ *
  */
 public class ShootCommand extends SequentialCommandGroup {
    private final ShooterSubsystem m_shooterSubsystem;
@@ -31,7 +31,7 @@ public class ShootCommand extends SequentialCommandGroup {
       addCommands(
             new StartEndCommand(() -> m_shooterSubsystem.setShooter(true),
                   () -> m_intakeSubsystem.setMagazineOnForShooting(), m_shooterSubsystem, m_intakeSubsystem)
-                        .withInterrupt(() -> m_shooterSubsystem.atSetpoint()),
+                        .withInterrupt(() -> m_shooterSubsystem.nearSetpoint()),
             new InstantCommand(() -> m_intakeSubsystem.setIntakeOn(), m_shooterSubsystem, m_intakeSubsystem),
             new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
             new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
