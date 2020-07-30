@@ -41,6 +41,8 @@ public class IntakeSubsystem extends SubsystemBase {
       private final static double kIntakeForwardSpeed = 1.0;
       private final static double kIntakeReverseSpeed = -1.0;
       private final static double kMaxBallsStored = 5.0;
+      private final static Value kIntakeUp = Value.kReverse;
+      private final static Value kIntakeDown = Value.kForward;
    }
 
    private VictorSPX magazineMotor = new VictorSPX(Ports.kMagazineMotorPort);
@@ -115,12 +117,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
    public void setIntakeOff() {
       intakeMotor.set(ControlMode.PercentOutput, 0.0);
-      intakeControl.set(Value.kReverse);
+      intakeControl.set(IntakeConstants.kIntakeUp);
    }
-
    public void setIntakeOn() {
       intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.kIntakeForwardSpeed);
-      intakeControl.set(Value.kForward);
+      intakeControl.set(IntakeConstants.kIntakeDown);
    }
 
    public void setIntakeReverse() {
