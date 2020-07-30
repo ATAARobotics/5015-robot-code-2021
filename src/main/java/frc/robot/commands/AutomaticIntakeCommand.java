@@ -20,7 +20,6 @@ import frc.robot.subsystems.IntakeSubsystem;
  * balls.
  */
 public class AutomaticIntakeCommand extends SequentialCommandGroup {
-   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
    private final IntakeSubsystem m_intakeSubsystem;
 
    public AutomaticIntakeCommand(IntakeSubsystem intakeSubsystem) {
