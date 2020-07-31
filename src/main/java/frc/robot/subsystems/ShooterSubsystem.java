@@ -58,8 +58,6 @@ public class ShooterSubsystem extends SubsystemBase {
       kI = ShooterConstants.kI;
       kD = ShooterConstants.kD;
       kIz = ShooterConstants.kIz;
-
-      // Max rpm
       kFF = ShooterConstants.kFF;
 
       kMaxOutput = ShooterConstants.kMaxOutput;
