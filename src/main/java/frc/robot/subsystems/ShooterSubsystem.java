@@ -85,11 +85,11 @@ public class ShooterSubsystem extends SubsystemBase {
    public void periodic() {
 
       // read PID coefficients from SmartDashboard
-      double p = SmartDashboard.getNumber("Shooting P Gain", 0);
-      double i = SmartDashboard.getNumber("Shooting I Gain", 0);
-      double d = SmartDashboard.getNumber("Shooting D Gain", 0);
-      double ff = SmartDashboard.getNumber("Shooting Feed Forward", 0);
-      manualShooterSpeed = SmartDashboard.getNumber("Shooting Manual Shooter Speed", 0.85);
+      double p = SmartDashboard.getNumber("Shooting P Gain", ShooterConstants.kP);
+      double i = SmartDashboard.getNumber("Shooting I Gain", ShooterConstants.kI);
+      double d = SmartDashboard.getNumber("Shooting D Gain", ShooterConstants.kD);
+      double ff = SmartDashboard.getNumber("Shooting Feed Forward", ShooterConstants.kFF);
+      manualShooterSpeed = SmartDashboard.getNumber("Shooting Manual Shooter Speed", ShooterConstants.kDefaultShooterSpeed);
       // if PID coefficients on SmartDashboard have changed, write new values to
       // controller
       if ((i != kI)) {
