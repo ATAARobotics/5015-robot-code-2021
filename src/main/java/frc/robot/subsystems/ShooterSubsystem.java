@@ -39,6 +39,8 @@ public class ShooterSubsystem extends SubsystemBase {
       public static final double kMinOutput = 0;
       public static final double kMaxRPM = 5600;
 
+      public static final MotorType kShooterMotorType = MotorType.kBrushless;
+
    }
 
    private double shooterSpeed = ShooterConstants.kDefaultShooterSpeed;
