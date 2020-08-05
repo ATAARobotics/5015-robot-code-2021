@@ -24,27 +24,46 @@ public class AutomaticIntakeCommand extends SequentialCommandGroup {
 
    public AutomaticIntakeCommand(IntakeSubsystem intakeSubsystem) {
       m_intakeSubsystem = intakeSubsystem;
-      // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(intakeSubsystem);
       addCommands(
-            new ConditionalCommand(
-                  new ParallelCommandGroup(new InstantCommand(() -> m_intakeSubsystem.setMagazineOnForIntake()),
-                        new InstantCommand(() -> m_intakeSubsystem.setIntakeOn())),
-                  new SequentialCommandGroup(
-                        new ParallelCommandGroup(new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()),
-                              new InstantCommand(() -> m_intakeSubsystem.setIntakeOff())),
-                        new InstantCommand(() -> this.cancel())),
-                  () -> m_intakeSubsystem.getMagazineFree()),
-            new WaitUntilCommand(() -> m_intakeSubsystem.ballDetected()),
-            new ConditionalCommand(
-                  new StartEndCommand(() -> m_intakeSubsystem.setMagazineOnForIntake(),
-                        () -> m_intakeSubsystem.setMagazineOff()).withTimeout(0.1),
+         new ConditionalCommand(
+            //If magazine has empty space:
+            new ParallelCommandGroup(
+               //Turn on magazine
+               new InstantCommand(() -> m_intakeSubsystem.setMagazineOnForIntake()),
+               //Turn on intake
+               new InstantCommand(() -> m_intakeSubsystem.setIntakeOn())),
 
-                  new StartEndCommand(() -> m_intakeSubsystem.setMagazineOnForIntake(),
-                        () -> m_intakeSubsystem.setMagazineOff()).withTimeout(0.2),
+            //If the magazine is full:
+               new SequentialCommandGroup(
+                  new ParallelCommandGroup(
+                     //Turn off magazine
+                     new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()),
+                     //Turn off intake
+                     new InstantCommand(() -> m_intakeSubsystem.setIntakeOff())),
+                     new InstantCommand(() -> this.cancel())),
 
-                  () -> m_intakeSubsystem.getLastBall()),
-            new InstantCommand(() -> m_intakeSubsystem.addBall())
+         //Checks for the empty space in the magazine required to run the above code
+         () -> m_intakeSubsystem.getMagazineFree()),
+            
+         //Wait until a ball has been detected entering the magazine
+         new WaitUntilCommand(() -> m_intakeSubsystem.ballDetected()),
+         new ConditionalCommand(
+            //If this is the last ball:
+            new StartEndCommand(() -> m_intakeSubsystem.setMagazineOnForIntake(),
+               //Turn off the magazine after the specified time in seconds
+               () -> m_intakeSubsystem.setMagazineOff()).withTimeout(0.1),
+
+               //If this is not the last ball:
+               new StartEndCommand(() -> m_intakeSubsystem.setMagazineOnForIntake(),
+                  //Turn off the magazine after the specified time in seconds
+                  () -> m_intakeSubsystem.setMagazineOff()).withTimeout(0.2),
+
+         //Checks if the ball entering the robot is the last one to run the above code
+         () -> m_intakeSubsystem.getLastBall()),
+
+         //Tells the intake subsystem that a ball has entered the magazine
+         new InstantCommand(() -> m_intakeSubsystem.addBall())
 
       );
    }

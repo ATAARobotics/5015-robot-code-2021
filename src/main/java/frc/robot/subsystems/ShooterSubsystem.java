@@ -113,6 +113,9 @@ public class ShooterSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("ProcessVariable", shooterEncoder.getVelocity());
    }
 
+   /**
+    * Turns the shooter on or off
+    */
    public void setShooter(boolean running) {
       if (running) {
          shooterController.setOutputRange(kMinOutput, kMaxOutput);
@@ -124,6 +127,9 @@ public class ShooterSubsystem extends SubsystemBase {
       shooterController.setReference(setPoint, ControlType.kVelocity);
    }
 
+   /**
+    * Sets the shooter speed based on the distance from the target
+    */
    public void setShooterSpeed(double distance) {
       double speed = 0.0;
       // If distance is 0.0 (manual entry), sets speed to 0.85
@@ -143,23 +149,38 @@ public class ShooterSubsystem extends SubsystemBase {
       shooterSpeed = speed;
    }
 
+   /**
+    * Returns the temperature of the shooter motor
+    */
    public double getTemperature() {
       return shooterMotor.getMotorTemperature();
    }
 
+   /**
+    * Returns the speed of the shooter motor
+    */
    public double getVelocity() {
       return shooterEncoder.getVelocity();
    }
 
+   /**
+    * Returns the setpoint for the shooter PID
+    */
    public double getSetpoint() {
       return setPoint;
    }
 
+   /**
+    * Checks if the shooter motor speed is near the setpoint
+    */
    public boolean nearSetpoint() {
       double errorPercent = Math.abs(getVelocity() - setPoint) / setPoint;
       return errorPercent < 0.01;
-  }
+   }
 
+   /**
+    * Checks if a ball is exiting the shooter
+    */
    public boolean ballDetected() {
       return shootDetector.getDistanceInches() < ShooterConstants.kBallDetectionDistance;
    }

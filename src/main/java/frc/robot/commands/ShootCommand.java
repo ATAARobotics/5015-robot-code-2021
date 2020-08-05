@@ -15,7 +15,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
- * * A command that uses the shooter and intake subsystems to automatically
+ * A command that uses the shooter and intake subsystems to automatically
  * shoot balls.
  *
  */
@@ -26,24 +26,36 @@ public class ShootCommand extends SequentialCommandGroup {
    public ShootCommand(final ShooterSubsystem shooterSubsystem, final IntakeSubsystem intakeSubsystem) {
       m_shooterSubsystem = shooterSubsystem;
       m_intakeSubsystem = intakeSubsystem;
-      // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(shooterSubsystem, intakeSubsystem);
       addCommands(
-            new StartEndCommand(() -> m_shooterSubsystem.setShooter(true),
-                  () -> m_intakeSubsystem.setMagazineOnForShooting(), m_shooterSubsystem, m_intakeSubsystem)
-                        .withInterrupt(() -> m_shooterSubsystem.nearSetpoint()),
+            new StartEndCommand(
+               //Turn on the shooter
+               () -> m_shooterSubsystem.setShooter(true),
+
+               //Turn on the magazine
+               () -> m_intakeSubsystem.setMagazineOnForShooting(), m_shooterSubsystem, m_intakeSubsystem
+
+            //Cancel this command once the shooter speed is close to the correct speed
+            ).withInterrupt(() -> m_shooterSubsystem.nearSetpoint()),
+            
+            //Turn on the intake
             new InstantCommand(() -> m_intakeSubsystem.setIntakeOn(), m_shooterSubsystem, m_intakeSubsystem),
+            
+            //Wait until the sensor saw the ball pass by
             new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
             new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
+
+            //Tells the intake subsystem that a ball has been shot
             new InstantCommand(() -> m_intakeSubsystem.ballShot()));
    }
 
    @Override
    public void end(boolean interrupted) {
       if (interrupted) {
+         //Turn off the shooter
          new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
+         //Turn off the magazine
          new InstantCommand(() -> m_intakeSubsystem.setMagazineOff());
-
       }
    }
 

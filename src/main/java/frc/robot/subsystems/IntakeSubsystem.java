@@ -62,18 +62,30 @@ public class IntakeSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Balls Stored", ballsStored);
    }
 
+   /**
+    * Turn off the magazine
+    */
    public void setMagazineOff() {
       magazineMotor.set(ControlMode.PercentOutput, 0.00);
    }
 
+   /**
+    * Turn on the magazine at the speed that the intake requires
+    */
    public void setMagazineOnForIntake() {
       magazineMotor.set(ControlMode.PercentOutput, IntakeConstants.kMagazineIntakeSpeed);
    }
 
+   /**
+    * Turn on the magazine at the speed that the shooter requires
+    */
    public void setMagazineOnForShooting() {
       magazineMotor.set(ControlMode.PercentOutput, IntakeConstants.kMagazineShootSpeed);
    }
 
+   /**
+    * Turn on the magazine in reverse
+    */
    public void setMagazineReverse() {
       magazineMotor.set(ControlMode.PercentOutput, IntakeConstants.kMagazineReverseSpeed);
    }
@@ -85,10 +97,16 @@ public class IntakeSubsystem extends SubsystemBase {
       this.ballsStored = ballsStored;
    }
 
+   /**
+    * Returns the current amount of balls in the magazine
+    */
    public double getBallsStored() {
       return ballsStored;
    }
 
+   /**
+    * Removes a ball from ballsStored
+    */
    public void ballShot() {
       ballsStored--;
       if (ballsStored < 0) {
@@ -115,32 +133,54 @@ public class IntakeSubsystem extends SubsystemBase {
       }
    }
 
+   /**
+    * Turns off the intake
+    */
    public void setIntakeOff() {
       intakeMotor.set(ControlMode.PercentOutput, 0.0);
       intakeControl.set(IntakeConstants.kIntakeUp);
    }
+
+   /**
+    * Turns on the intake
+    */
    public void setIntakeOn() {
       intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.kIntakeForwardSpeed);
       intakeControl.set(IntakeConstants.kIntakeDown);
    }
 
+   /**
+    * Turns on the intake in reverse
+    */
    public void setIntakeReverse() {
       intakeMotor.set(ControlMode.PercentOutput, IntakeConstants.kIntakeReverseSpeed);
       intakeControl.set(Value.kForward);
    }
 
+   /**
+    * Checks if there is space in the magazine
+    */
    public boolean getMagazineFree() {
       return (getBallsStored() < IntakeConstants.kMaxBallsStored);
    }
 
+   /**
+    * Checks if a ball has been detected entering the magazine
+    */
    public boolean ballDetected() {
       return (getIntakeDectector() && getBallsStored() != IntakeConstants.kMaxBallsStored);
    }
 
+   /**
+    * Checks if the next ball that enters the magazine is the last one that there is space for
+    */
    public boolean getLastBall() {
       return !(getBallsStored() < IntakeConstants.kMaxBallsStored-1);
    }
 
+   /**
+    * Adds a ball to ballsStored
+    */
    public void addBall() {
       ballsStored++;
       if (ballsStored > IntakeConstants.kMaxBallsStored) {
