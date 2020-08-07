@@ -26,7 +26,7 @@ import frc.robot.Ports;
 
 /**
  * The intake class controls the ball intake and storage. It will automatically
- * intake, but not too many balls.
+ * intake up to the maximum balls that the robot can hold.
  */
 public class IntakeSubsystem extends SubsystemBase {
    public static final class IntakeConstants {

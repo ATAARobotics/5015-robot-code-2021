@@ -18,8 +18,7 @@ import frc.robot.Ports;
  */
 
 /**
- * The shooter class controls the ball intake, storage, and shooter. It will
- * automatically intake, but not too many balls.
+ * The shooter class controls the PID and distance calculations for the shooter.
  */
 public class ShooterSubsystem extends SubsystemBase {
 

@@ -17,7 +17,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 /**
  * A command that uses the shooter and intake subsystems to automatically
  * shoot balls.
- *
  */
 public class ShootCommand extends SequentialCommandGroup {
    private final ShooterSubsystem m_shooterSubsystem;

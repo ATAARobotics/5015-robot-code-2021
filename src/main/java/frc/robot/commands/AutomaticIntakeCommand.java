@@ -35,13 +35,13 @@ public class AutomaticIntakeCommand extends SequentialCommandGroup {
                new InstantCommand(() -> m_intakeSubsystem.setIntakeOn())),
 
             //If the magazine is full:
-               new SequentialCommandGroup(
-                  new ParallelCommandGroup(
-                     //Turn off magazine
-                     new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()),
-                     //Turn off intake
-                     new InstantCommand(() -> m_intakeSubsystem.setIntakeOff())),
-                     new InstantCommand(() -> this.cancel())),
+            new SequentialCommandGroup(
+               new ParallelCommandGroup(
+                  //Turn off magazine
+                  new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()),
+                  //Turn off intake
+                  new InstantCommand(() -> m_intakeSubsystem.setIntakeOff())),
+                  new InstantCommand(() -> this.cancel())),
 
          //Checks for the empty space in the magazine required to run the above code
          () -> m_intakeSubsystem.getMagazineFree()),
