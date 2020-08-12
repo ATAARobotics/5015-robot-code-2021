@@ -1,50 +1,53 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.Ports;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.JoystickDriveCommand;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.GenericHID;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import frc.robot.subsystems.DrivingSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commands.AutomaticIntakeCommand;
+import frc.robot.commands.JoystickDriveCommand;
+import frc.robot.commands.ShootCommand;
 
 /**
- * This class is where the bulk of the robot should be declared.   Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls).   Instead, the structure of the robot
- * (including subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Very little robot logic
+ * should go in this class, rather, the structure of the subsystems and commands and joystick
+ * mapping should happen here.
  */
 public class RobotContainer {
-   /**
-    * Constants for operator interface (OI).
-    */
    private static final class OIConstants {
       public static final GenericHID.Hand YControl = GenericHID.Hand.kLeft;
       public static final GenericHID.Hand XControl = GenericHID.Hand.kRight;
+      public static final int kManualShootButton = Button.kY.value;
+      public static final int kDistShootButton = Button.kA.value;
+      public static final int kVisionShootButton = Button.kB.value;
+      public static final int kResetBallsButton = Button.kStart.value;
+      public static final int kMagazineReverseButton = Button.kBack.value;
+      public static final int kIntakeReverseButton = Button.kX.value;
+      public static final int kIntakeButton = Button.kA.value;
    }
 
-   // The robot's subsystems and commands are defined here...
-   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+   // The robot's subsystems and commands are defined here
    private final DrivingSubsystem m_driveSystem = new DrivingSubsystem();
+   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+   XboxController m_driverController = new XboxController(Ports.kDriverControllerPort);
+   XboxController m_gunnerController = new XboxController(Ports.kGunnerControllerPort);
 
-   /**
-    * The container for the robot. Contains subsystems, OI devices, and commands.
-    */
+   // TODO: Add missing components - Auto and Vision
+
    public RobotContainer() {
       // Configure the button bindings
-      XboxController m_driverController = new XboxController(Ports.kDriverControllerPort);
-	   XboxController m_gunnerController = new XboxController(Ports.kGunnerControllerPort);
       configureButtonBindings();
+      
       // Configure default commands
       // Set the default drive command to split-stick arcade drive
       m_driveSystem.setDefaultCommand(
@@ -57,23 +60,44 @@ public class RobotContainer {
    }
 
    /**
-    * Use this method to define your button->command mappings.   Buttons can be created by
-    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
-    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+    * Binds commands to joystick buttons
     */
    private void configureButtonBindings() {
+      // Manual Shoot
+      new JoystickButton(m_gunnerController, OIConstants.kManualShootButton)
+         .whileHeld(new SequentialCommandGroup(new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(0.0)),
+            new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
+      // Dist Shoot
+      new JoystickButton(m_gunnerController, OIConstants.kDistShootButton)
+         .whileHeld(new ParallelCommandGroup(
+            new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* TODO Distance input */0)),
+            new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
-   }
+      // Vision Shoot
+      new JoystickButton(m_gunnerController, OIConstants.kVisionShootButton)
+         .whenHeld(new ParallelCommandGroup(
+            /* new VisionTargetingCommand(m_visionSubsystem), */
+            new InstantCommand(() -> m_shooterSubsystem.setShooterSpeed(/* TODO Distance input */0)),
+            new ShootCommand(m_shooterSubsystem, m_intakeSubsystem)));
 
+      // Reset Balls
+      new JoystickButton(m_gunnerController, OIConstants.kResetBallsButton)
+         .whenReleased(new InstantCommand(() -> m_intakeSubsystem.setBallsStored(0)));
 
-   /**
-    * Use this to pass the autonomous command to the main {@link Robot} class.
-    *
-    * @return the command to run in autonomous
-    */
-   public Command getAutonomousCommand() {
-      // An ExampleCommand will run in autonomous
-      return m_autoCommand;
+      // Magazine Reverse
+      new JoystickButton(m_gunnerController, OIConstants.kMagazineReverseButton)
+         .whenPressed(new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()))
+         .whenReleased(new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
+
+      // Intake Reverse
+      new JoystickButton(m_gunnerController, OIConstants.kIntakeReverseButton)
+         .whenPressed(new SequentialCommandGroup(
+            new InstantCommand(() -> m_intakeSubsystem.setMagazineReverse()),
+            new InstantCommand(() -> m_intakeSubsystem.setIntakeReverse())))
+         .whenReleased(new InstantCommand(() -> m_intakeSubsystem.setMagazineOff()));
+
+      // Intake
+      new JoystickButton(m_gunnerController, OIConstants.kIntakeButton)
+         .toggleWhenActive(new AutomaticIntakeCommand(m_intakeSubsystem));
    }
 }
