@@ -45,7 +45,7 @@ public class VirtualCANSparkMax {
          double dValue = (pValue - PID_lastValue) * PID_D;
          double ffValue = PID_setPoint * PID_FF;
          PID_lastValue = pValue;
-         double speed = Math.min(Math.max(pValue + iValue + dValue + ffValue, 0), 1);
+         double speed = Math.min(Math.max(pValue + iValue + dValue + ffValue, PID_minOutput), PID_maxOutput);
          virtualMotor.set(speed);
          PID_velocity *= 0.9; // Very accurate motor simulation
          PID_velocity += speed*1000;
@@ -88,6 +88,9 @@ public class VirtualCANSparkMax {
    public void setOutputRange(double kMinOutput, double kMaxOutput) {
       if (RobotBase.isReal()) {
          physicalController.setOutputRange(kMinOutput, kMaxOutput);
+      } else {
+         PID_minOutput = kMinOutput;
+         PID_maxOutput = kMaxOutput;
       }
    }
    public void setReference(double targetSpeed) {
