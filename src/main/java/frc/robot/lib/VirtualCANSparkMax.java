@@ -20,6 +20,7 @@ public class VirtualCANSparkMax {
    private double PID_FF;
    private double PID_minOutput;
    private double PID_maxOutput;
+   private double PID_velocity;
 
    public VirtualCANSparkMax(int port) {
       if (RobotBase.isReal()) {
@@ -44,7 +45,10 @@ public class VirtualCANSparkMax {
          double dValue = (pValue - PID_lastValue) * PID_D;
          double ffValue = PID_setPoint * PID_FF;
          PID_lastValue = pValue;
-         virtualMotor.set(pValue + iValue + dValue + ffValue);
+         double speed = Math.min(Math.max(pValue + iValue + dValue + ffValue, 0), 1);
+         virtualMotor.set(speed);
+         PID_velocity *= 0.9; // Very accurate motor simulation
+         PID_velocity += speed*1000;
       }
    }
 
@@ -88,15 +92,23 @@ public class VirtualCANSparkMax {
    }
    public void setReference(double targetSpeed) {
       if (RobotBase.isReal()) {
-         PID_setPoint = targetSpeed;
-      } else {
          physicalController.setReference(targetSpeed, ControlType.kVelocity);
+      } else {
+         PID_setPoint = targetSpeed;
       }
    }
    public double getVelocity() {
-      return virtualMotor.getSelectedSensorVelocity();
+      if (RobotBase.isReal()) {
+         return physicalEncoder.getVelocity();
+      } else {
+         return PID_velocity;
+      }
    }
    public double getMotorTemperature() {
-      return physicalMotor.getMotorTemperature();
+      if (RobotBase.isReal()) {
+         return physicalMotor.getMotorTemperature();
+      } else {
+         return 500000; // Oh nO iTs toO Hot
+      }
    }
 }

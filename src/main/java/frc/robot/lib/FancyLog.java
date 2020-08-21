@@ -12,7 +12,7 @@ public class FancyLog {
    }
 
    public static final LogSystem enabledLogs[] = {
-      LogSystem.SUBSYSTEM_DRIVE, LogSystem.COMMAND_OI_DRIVE,
+      LogSystem.SUBSYSTEM_DRIVE, LogSystem.COMMAND_OI_DRIVE, LogSystem.SUBSYSTEM_SHOOT,
    };
 
    public static void Log(LogLevel level, LogSystem where, String message) {
