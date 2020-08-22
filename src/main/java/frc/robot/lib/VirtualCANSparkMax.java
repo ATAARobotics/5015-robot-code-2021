@@ -1,6 +1,9 @@
 package frc.robot.lib;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import edu.wpi.first.hal.SimBoolean;
+import edu.wpi.first.hal.SimDevice;
+import edu.wpi.first.hal.SimDouble;
 import com.revrobotics.*;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -9,8 +12,10 @@ public class VirtualCANSparkMax {
    private final CANEncoder physicalEncoder;
    private final CANPIDController physicalController;
 
-   private final WPI_VictorSPX virtualMotor;
-
+   private SimDevice simDevice;
+   private SimDouble simMotorOutput;
+   private SimDouble simMotorVelocity;
+   
    private double PID_setPoint;
    private double PID_lastValue;
    private double PID_totalValue;
@@ -27,9 +32,15 @@ public class VirtualCANSparkMax {
          physicalMotor = new CANSparkMax(port, CANSparkMaxLowLevel.MotorType.kBrushless);
          physicalEncoder = new CANEncoder(physicalMotor);
          physicalController = physicalMotor.getPIDController();
-         virtualMotor = null;
+         simDevice = null;
+         simMotorOutput = null;
+         simMotorVelocity = null;
       } else {
-         virtualMotor = new WPI_VictorSPX(port);
+         simDevice = SimDevice.create("CAN Spark MAX", port);
+         if (simDevice != null) {
+           simMotorOutput = simDevice.createDouble("Motor Output", true, 0.0);
+           simMotorVelocity = simDevice.createDouble("Motor Velocity", true, 0.0);
+         }
          physicalMotor = null;
          physicalEncoder = null;
          physicalController = null;
@@ -46,7 +57,8 @@ public class VirtualCANSparkMax {
          double ffValue = PID_setPoint * PID_FF;
          PID_lastValue = pValue;
          double speed = Math.min(Math.max(pValue + iValue + dValue + ffValue, PID_minOutput), PID_maxOutput);
-         virtualMotor.set(speed);
+         simMotorOutput.set(speed);
+         simMotorVelocity.set(PID_velocity);
          PID_velocity *= 0.9; // Very accurate motor simulation
          PID_velocity += speed*1000;
       }
