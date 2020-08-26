@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.cuforge.libcu.Lasershark;
 import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
@@ -10,6 +9,7 @@ import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
+import frc.robot.lib.VirtualCANSparkMax;
 
 /**
  * Ball shooter code
@@ -44,9 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
    private double shooterSpeed = ShooterConstants.kDefaultShooterSpeed;
    private double manualShooterSpeed = ShooterConstants.kDefaultShooterSpeed;
-   private CANSparkMax shooterMotor = new CANSparkMax(Ports.kShooterMotorPort, MotorType.kBrushless);
-   private CANEncoder shooterEncoder = new CANEncoder(shooterMotor);
-   private CANPIDController shooterController = shooterMotor.getPIDController();
+   private VirtualCANSparkMax shooterMotor = new VirtualCANSparkMax(Ports.kShooterMotorPort);
    private Lasershark shootDetector = new Lasershark(Ports.kShooterLaserSharkPort);
 
    private double setPoint = 0;
@@ -64,12 +62,12 @@ public class ShooterSubsystem extends SubsystemBase {
       kMaxOutput = ShooterConstants.kMaxOutput;
       kMinOutput = ShooterConstants.kMinOutput;
       maxRPM = ShooterConstants.kMaxRPM;
-      shooterController.setP(kP);
-      shooterController.setI(kI);
-      shooterController.setD(kD);
-      shooterController.setIZone(kIz);
-      shooterController.setFF(kFF);
-      shooterController.setOutputRange(kMinOutput, kMaxOutput);
+      shooterMotor.setP(kP);
+      shooterMotor.setI(kI);
+      shooterMotor.setD(kD);
+      shooterMotor.setIZone(kIz);
+      shooterMotor.setFF(kFF);
+      shooterMotor.setOutputRange(kMinOutput, kMaxOutput);
 
       // display PID coefficients on SmartDashboard
       SmartDashboard.putNumber("Shooting I Gain", kI);
@@ -92,24 +90,26 @@ public class ShooterSubsystem extends SubsystemBase {
       // if PID coefficients on SmartDashboard have changed, write new values to
       // controller
       if ((i != kI)) {
-         shooterController.setI(i);
+         shooterMotor.setI(i);
          kI = i;
       }
       if ((d != kD)) {
-         shooterController.setD(d);
+         shooterMotor.setD(d);
          kD = d;
       }
       if ((p != kP)) {
-         shooterController.setP(p);
+         shooterMotor.setP(p);
          kP = p;
       }
       if ((ff != kFF)) {
-         shooterController.setFF(ff);
+         shooterMotor.setFF(ff);
          kFF = ff;
       }
 
       SmartDashboard.putNumber("SetPoint", setPoint);
-      SmartDashboard.putNumber("ProcessVariable", shooterEncoder.getVelocity());
+      SmartDashboard.putNumber("ProcessVariable", shooterMotor.getVelocity());
+
+      shooterMotor.periodic(); // Updates PID for simulation
    }
 
    /**
@@ -117,13 +117,13 @@ public class ShooterSubsystem extends SubsystemBase {
     */
    public void setShooter(boolean running) {
       if (running) {
-         shooterController.setOutputRange(kMinOutput, kMaxOutput);
+         shooterMotor.setOutputRange(kMinOutput, kMaxOutput);
          setPoint = shooterSpeed * maxRPM;
       } else {
          setPoint = 0 * maxRPM;
-         shooterController.setOutputRange(0, 0);
+         shooterMotor.setOutputRange(0, 0);
       }
-      shooterController.setReference(setPoint, ControlType.kVelocity);
+      shooterMotor.setReference(setPoint);
    }
 
    /**
@@ -159,7 +159,7 @@ public class ShooterSubsystem extends SubsystemBase {
     * Returns the speed of the shooter motor
     */
    public double getVelocity() {
-      return shooterEncoder.getVelocity();
+      return shooterMotor.getVelocity();
    }
 
    /**
