@@ -31,7 +31,7 @@ public class RobotContainer {
       public static final int kResetBallsButton = Button.kStart.value;
       public static final int kMagazineReverseButton = Button.kBack.value;
       public static final int kIntakeReverseButton = Button.kX.value;
-      public static final int kIntakeButton = Button.kA.value;
+      public static final int kIntakeButton = Button.kBumperRight.value;
    }
 
    // The robot's subsystems and commands are defined here
@@ -47,7 +47,7 @@ public class RobotContainer {
    public RobotContainer() {
       // Configure the button bindings
       configureButtonBindings();
-      
+
       // Configure default commands
       // Set the default drive command to split-stick arcade drive
       m_driveSystem.setDefaultCommand(
