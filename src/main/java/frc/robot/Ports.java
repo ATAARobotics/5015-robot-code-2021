@@ -13,7 +13,7 @@ public final class Ports {
 
    //Shooter Ports
    public static final int kShooterLaserSharkPort = 6;
-   public static final int kShooterMotorPort = 7;
+   public static final int[] kShooterMotorPorts = new int[] { 7, 8 };
 
    //Intake Ports
    public static final int kMagazineMotorPort = 6;

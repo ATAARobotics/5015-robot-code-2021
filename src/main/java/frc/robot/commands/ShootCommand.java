@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -36,10 +37,10 @@ public class ShootCommand extends SequentialCommandGroup {
 
             //Cancel this command once the shooter speed is close to the correct speed
             ).withInterrupt(() -> m_shooterSubsystem.nearSetpoint()),
-            
+
             //Turn on the intake
             new InstantCommand(() -> m_intakeSubsystem.setIntakeOn(), m_shooterSubsystem, m_intakeSubsystem),
-            
+
             //Wait until the sensor saw the ball pass by
             new WaitUntilCommand(() -> m_shooterSubsystem.ballDetected()),
             new WaitUntilCommand(() -> !m_shooterSubsystem.ballDetected()),
@@ -50,11 +51,13 @@ public class ShootCommand extends SequentialCommandGroup {
 
    @Override
    public void end(boolean interrupted) {
-      if (interrupted) {
+      if (interrupted || true) {
          //Turn off the shooter
          new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
          //Turn off the magazine
          new InstantCommand(() -> m_intakeSubsystem.setMagazineOff());
+
+         new PrintCommand("Cancelling");
       }
    }
 
