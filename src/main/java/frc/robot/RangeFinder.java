@@ -1,16 +1,18 @@
 package frc.robot;
 
-import com.cuforge.libcu.Lasershark;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class RangeFinder {
 
-    private Lasershark lasershark = null;
+    private Ultrasonic ultrasonic = null;
 
-    public RangeFinder(Lasershark lasershark) {
-        this.lasershark = lasershark;
+    public RangeFinder(Ultrasonic ultrasonic) {
+        this.ultrasonic = ultrasonic;
+
+        Ultrasonic.setAutomaticMode(true);
     }
     
     public double getDistance() {
-        return lasershark.getDistanceInches();
+        return ultrasonic.getRangeInches();
     }
 }

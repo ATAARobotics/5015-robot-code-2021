@@ -4,13 +4,13 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.cuforge.libcu.Lasershark;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 import frc.robot.vision.LimeLight;
@@ -65,8 +65,7 @@ public class RobotMap {
     // Gyro
     private Gyro NavX = new Gyro();
 
-    private Lasershark intakeLaserShark = new Lasershark(5);
-    private Lasershark shootLaserShark = new Lasershark(6);
+    private Ultrasonic intakeUltrasonic = new Ultrasonic(5, 6);
 
     private DigitalInput climbLimit = new DigitalInput(7);
 
@@ -77,7 +76,6 @@ public class RobotMap {
     public LimeLight limeLight;
     public Shooter shooter;
     public RangeFinder intakeDetector;
-    public RangeFinder shootDetector;
     public Encoders driveEncoders;
     public Climber climber;
     public Align align;
@@ -88,9 +86,8 @@ public class RobotMap {
         swatDrive = new SWATDrive(this);
         //colorSensor = new ColorSensor(this);
         limeLight = new LimeLight();
-        intakeDetector = new RangeFinder(intakeLaserShark);
-        shootDetector = new RangeFinder(shootLaserShark);
-        shooter = new Shooter(shootMotorMaster, shootMotorFollower, shootMotors, magazineMotor, intakeMotor, intakeSolenoid, hoodSolenoid, shooterEncoder, intakeDetector, shootDetector);
+        intakeDetector = new RangeFinder(intakeUltrasonic);
+        shooter = new Shooter(shootMotorMaster, shootMotorFollower, shootMotors, magazineMotor, intakeMotor, intakeSolenoid, hoodSolenoid, shooterEncoder, intakeDetector);
         driveEncoders = new Encoders(rearLeftMotor, rearRightMotor);
         climber = new Climber(this);
         align = new Align(this);
