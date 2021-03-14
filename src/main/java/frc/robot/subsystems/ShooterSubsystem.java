@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.cuforge.libcu.Lasershark;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
       public static final double kFF = 0.00015;
       public static final double kMaxOutput = 1;
       public static final double kMinOutput = 0;
-      public static final double kMaxRPM = 6000;
+      public static final double kMaxRPM = 15000;
 
    }
 

@@ -1,0 +1,10 @@
+5015-2020-rev1
+ShootForward:
+m 3.0
+s 0.0
+ShootReverse:
+m -3.0
+s 0.0
+FireReverse:
+f 0.0
+m -3.0

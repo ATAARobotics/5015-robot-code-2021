@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -55,6 +56,8 @@ public class ShootCommand extends SequentialCommandGroup {
          new InstantCommand(() -> m_shooterSubsystem.setShooter(false));
          //Turn off the magazine
          new InstantCommand(() -> m_intakeSubsystem.setMagazineOff());
+
+         new PrintCommand("Cancelling");
       }
    }
 
