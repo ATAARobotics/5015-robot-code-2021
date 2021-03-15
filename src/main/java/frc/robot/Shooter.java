@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 enum IntakeCase {
-    WAITING, STARTING, RUNNING, REVERSE, MAGREVERSE, ALLREVERSE, OFF
+    WAITING, STARTING, RUNNING, WAIT_BALL, REVERSE, MAGREVERSE, ALLREVERSE, OFF
 }
 
 enum ShootCase {
@@ -38,7 +38,7 @@ public class Shooter {
     // private final double beltCircumference = 0.0 * Math.PI;
     // private final double magazineTicksPerBall = 0.0 / beltCircumference * 7.5;
 
-    private final double magazineSpeed = -0.70;
+    private final double magazineSpeed = -0.5;
     private double intakeSpeed = 1.0;
     private double shooterSpeed = 0.7;
     private double manualShooterSpeed = 0.7;
@@ -51,19 +51,20 @@ public class Shooter {
     private WPI_VictorSPX magazineMotor = null;
     private WPI_VictorSPX intakeMotor = null;
     private RangeFinder intakeDetector = null;
-    private RangeFinder shootDetector = null;
     private DoubleSolenoid intakeControl = null;
     private DoubleSolenoid hoodControl = null;
 
     private Timer magazineTimer = new Timer();
+    private final double MAGAZINE_TIME = 0.125;
+    private final double LAST_BALL_MAGAZINE_TIME = 0;
 
     private boolean hoodForward = false;
-    private double ballsStored = 3;
+    private double ballsStored = 0;
     private IntakeCase intakeCase = IntakeCase.WAITING;
     private ShootCase shootCase = ShootCase.INITIAL;
     private double setPoint = 0;
     private double rpm = 0;
-    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
+    public double kP, kI, kD, kIz,/* kFF,*/ kMaxOutput, kMinOutput, maxRPM;
 
     private boolean safetyOverride = false;
     private double minOutput = kMinOutput;
@@ -79,13 +80,12 @@ public class Shooter {
      */
     public Shooter(WPI_TalonSRX shooterMotorMaster, WPI_TalonSRX shooterMotorFollower, SpeedControllerGroup shooterMotor, WPI_VictorSPX magazineMotor, WPI_VictorSPX intakeMotor,
             DoubleSolenoid intakeControl, DoubleSolenoid hoodControl, CANCoder shooterEncoder,
-            RangeFinder intakeDetector, RangeFinder shootDetector) {
+            RangeFinder intakeDetector) {
 
         this.shooterMotors = shooterMotor;
         this.magazineMotor = magazineMotor;
         this.intakeMotor = intakeMotor;
         this.intakeDetector = intakeDetector;
-        this.shootDetector = shootDetector;
         this.intakeControl = intakeControl;
         this.hoodControl = hoodControl;
         this.shooterEncoder = shooterEncoder;
@@ -102,13 +102,13 @@ public class Shooter {
      ////START: PID
     public void ShooterInit() {
         // set PID coefficients
-        kP = 0.002;
+        kP = 0.005;
         kI = 0.0000008;
-        kD = 0.0;
+        kD = -0.000075;
         kIz = 0;
 
         //Max rpm
-        kFF = 0.00015;
+        //kFF = 0.00015;
 
         kMaxOutput = 1;
         kMinOutput = 0;
@@ -145,7 +145,7 @@ public class Shooter {
         SmartDashboard.putNumber("Shooting I Gain", kI);
         SmartDashboard.putNumber("Shooting D Gain", kD);
         SmartDashboard.putNumber("Shooting P Gain", kP);
-        SmartDashboard.putNumber("Shooting Feed Forward", kFF);
+        //SmartDashboard.putNumber("Shooting Feed Forward", kFF);
         SmartDashboard.putNumber("Shooting Manual Shooter Speed", manualShooterSpeed);
     }
 
@@ -273,7 +273,7 @@ public class Shooter {
 
                     break;
                 case WARMUP: // Shooter speeding up
-                    if (rpm >= (setPoint * 0.95)) {
+                    if (rpm >= (setPoint * 0.975)) {
                         shootCase = ShootCase.RUNNING;
                     }
                     break;
@@ -281,13 +281,14 @@ public class Shooter {
                 case RUNNING: // Shooter running
                     setMagazine(true, -1.0);
                     setIntake(true);
-                    if (shootDetector.getDistance() < 7.0) {
+                    /*if (shootDetector.getDistance() < 7.0) {
                         shootCase = ShootCase.BALL_SHOOTING;
-                    }
+                    }*/
 
                     break;
+
                 case BALL_SHOOTING:
-                    if(shootDetector.getDistance() > 7.0){
+                    /*if(shootDetector.getDistance() > 7.0){
                         shootCase = ShootCase.WARMUP;
                         if (ballsStored >= 1) {
                             ballsStored--;
@@ -296,8 +297,9 @@ public class Shooter {
                             ballsStored = 0;
                         }
 
-                    }
+                    }*/
                     break;
+
                 default:
                     DriverStation.reportError(String.format("Invalid Shoot Case: %s", shootCase.toString()), false);
             }
@@ -399,21 +401,30 @@ public class Shooter {
             case RUNNING:
                 setIntakeSpeed(1.0);
                 if(ballsStored < 4) {
-                    if(magazineTimer.get() < 0.2) {
+                    if(magazineTimer.get() < MAGAZINE_TIME) {
                         setMagazine(true);
                     } else {
                         ballsStored++;
-                        intakeCase = IntakeCase.WAITING;
+                        intakeCase = IntakeCase.WAIT_BALL;
                     }
                 } else {
-                    if(magazineTimer.get() < 0.1) {
+                    if(magazineTimer.get() < LAST_BALL_MAGAZINE_TIME) {
                         setMagazine(true);
                     } else {
                         ballsStored++;
-                        intakeCase = IntakeCase.WAITING;
+                        intakeCase = IntakeCase.WAIT_BALL;
                     }
                 }
                 break;
+
+            case WAIT_BALL:
+                if (getIntakeDectector()) {
+                    setMagazine(false);
+                } else {
+                    intakeCase = IntakeCase.WAITING;
+                }
+                break;
+
             case REVERSE:
                 setIntakeSpeed(-1.0);
                 setIntake(true);

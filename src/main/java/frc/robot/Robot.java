@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
         gunnerSchemePicker.addOption("Fun Mode", funMode);
         SmartDashboard.putData("Gunner Scheme choices", gunnerSchemePicker);
 
-        SmartDashboard.putNumber("Balls Stored", 3.0);
+        SmartDashboard.putNumber("Balls Stored", 0.0);
 
         robotMap.shooter.ShooterInit();
 
@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        robotMap.shooter.setBallsStored((int)SmartDashboard.getNumber("Balls Stored", 3));
+        robotMap.shooter.setBallsStored((int)SmartDashboard.getNumber("Balls Stored", 0));
     }
 
     @Override

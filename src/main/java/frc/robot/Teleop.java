@@ -16,7 +16,6 @@ public class Teleop {
     private Climber climber = null;
     private Gyro gyro = null;
     private RangeFinder intakeDetector = null;
-    private RangeFinder shootDetector = null;
     private Align alignment = null;
 
     // Vision Control Variables
@@ -40,7 +39,6 @@ public class Teleop {
         //this.colorSensor = robotMap.colorSensor;
         this.gyro = robotMap.getGyro();
         this.intakeDetector = robotMap.intakeDetector;
-        this.shootDetector = robotMap.shootDetector;
         this.climber = robotMap.climber;
         this.alignment = robotMap.align;
     }
@@ -173,8 +171,6 @@ public class Teleop {
         }
 
         SmartDashboard.putNumber("Lasershark Intake Distance", intakeDetector.getDistance());
-
-        SmartDashboard.putNumber("Lasershark Shooter Distance", shootDetector.getDistance());
 
         climber.manualClimb(joysticks.getManualClimb());
 
