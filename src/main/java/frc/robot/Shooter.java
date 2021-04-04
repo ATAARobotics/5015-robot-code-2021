@@ -40,8 +40,8 @@ public class Shooter {
 
     private final double magazineSpeed = -0.5;
     private double intakeSpeed = 1.0;
-    private double shooterSpeed = 0.7;
-    private double manualShooterSpeed = 0.7;
+    private double shooterSpeed = 0.55;
+    private double manualShooterSpeed = 0.55;
     private boolean shooterActive = false;
     private WPI_TalonSRX shooterMotorMaster = null;
     private WPI_TalonSRX shooterMotorFollower = null;
@@ -102,9 +102,9 @@ public class Shooter {
      ////START: PID
     public void ShooterInit() {
         // set PID coefficients
-        kP = 0.005;
+        kP = 0.03;
         kI = 0.0000008;
-        kD = -0.000075;
+        kD = 0.005;
         kIz = 0;
 
         //Max rpm
@@ -178,6 +178,9 @@ public class Shooter {
         SmartDashboard.putNumber("SetPoint", setPoint);
         SmartDashboard.putNumber("ProcessVariable", rpm);
         double speed = shooterController.calculate(rpm, setPoint);
+        if (setPoint == 0) {
+            speed = 0;
+        }
         SmartDashboard.putNumber("Shooter Speed", speed);
         if(speed > kMaxOutput) {
             speed = maxOutput;
@@ -273,14 +276,14 @@ public class Shooter {
 
                     break;
                 case WARMUP: // Shooter speeding up
-                    if (rpm >= (setPoint * 0.975)) {
+                    if (rpm >= (setPoint * 0.9857)) {
                         shootCase = ShootCase.RUNNING;
                     }
                     break;
 
                 case RUNNING: // Shooter running
                     setMagazine(true, -1.0);
-                    setIntake(true);
+                    //setIntake(true);
                     /*if (shootDetector.getDistance() < 7.0) {
                         shootCase = ShootCase.BALL_SHOOTING;
                     }*/
