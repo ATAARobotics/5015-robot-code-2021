@@ -158,19 +158,19 @@ public class Auto {
         //Shoot until empty
         else if(commandType.equals("s")) {
             if(alignment.atSetpoint()){
-                DriverStation.reportWarning("On target with " + shooter.getBallsStored(), false);
+                //DriverStation.reportWarning("On target with " + shooter.getBallsStored(), false);
                 onTargetCounter++;
                 // Once has been on target for 10 counts: Disable PID, Reset Camera Settings
                 if (onTargetCounter > 10) {
                     //Pass target distance to shooter
-                    if(shooter.getBallsStored() != 0) {
-                        shooter.setShooterSpeed(alignment.getDistance());
+                    /* if(shooter.getBallsStored() != 0) {
+                        //shooter.setShooterSpeed(alignment.getDistance());
                         shooter.shoot(true);
                     }
                     else {
                         shooter.shoot(false);
                         nextCommand = true;
-                    }
+                    } */
                 }
             } else {
                 DriverStation.reportWarning("Not on target", false);
@@ -180,7 +180,7 @@ public class Auto {
         }
         else if(commandType.equals("f")) {
             if(Timer.getMatchTime()>5) {
-                shooter.setShooterSpeed(alignment.getDistance()+2);
+                //shooter.setShooterSpeed(alignment.getDistance()+2);
                 shooter.shoot(true);
             }
             else {

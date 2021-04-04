@@ -23,7 +23,10 @@ class OI {
     //Gunner variables
     private XboxController gunnerStick = new XboxController(1);
     private String gunnerScheme = "Default";
-    private boolean manualShoot;
+    private boolean shoot0;
+    private boolean shoot1;
+    private boolean shoot2;
+    private boolean shoot3;
     private boolean overrideSafeties = false;
     private boolean discoToggle;
     private boolean distShoot;
@@ -44,12 +47,15 @@ class OI {
         climbRelease = driveStick.getStartButton();
 
         resetBalls = gunnerStick.getStartButtonReleased();
-        visionShoot = gunnerStick.getBButtonReleased();
-        manualShoot = gunnerStick.getYButton();
-        distShoot = gunnerStick.getAButton();
-        intakeToggle = gunnerStick.getBumperReleased(Hand.kRight);
-        hoodToggle = gunnerStick.getBumperReleased(Hand.kLeft);
-        intakeReverse = gunnerStick.getXButtonReleased();
+        visionShoot = false;
+        shoot0 = gunnerStick.getAButton();
+        shoot1 = gunnerStick.getYButton();
+        shoot2 = gunnerStick.getXButton();
+        shoot3 = gunnerStick.getBButton();
+        distShoot = false;
+        intakeToggle = gunnerStick.getBumperPressed(Hand.kRight);
+        hoodToggle = gunnerStick.getBumperPressed(Hand.kLeft);
+        intakeReverse = false;
         magazineReverse = gunnerStick.getBackButton();
 
 
@@ -113,8 +119,25 @@ class OI {
     public void setGunnerScheme(String gunnerScheme){
         this.gunnerScheme = gunnerScheme;
     }
-	public boolean getManualShoot() {
-		return manualShoot;
+
+	public boolean getManualShoot(int distance) {
+		switch (distance) {
+            case 0:
+                return shoot0;
+
+            case 1:
+                return shoot1;
+
+            case 2:
+                return shoot2;
+
+            case 3:
+                return shoot3;
+        
+            default:
+                System.out.println(distance + " is not a distance in Interstellar Accuracy!");
+                return false;
+        }
     }
 
     public boolean getOverride() {

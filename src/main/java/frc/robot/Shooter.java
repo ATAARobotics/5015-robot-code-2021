@@ -41,7 +41,8 @@ public class Shooter {
     private final double magazineSpeed = -0.5;
     private double intakeSpeed = 1.0;
     private double shooterSpeed = 0.55;
-    private double manualShooterSpeed = 0.55;
+    private double innerShooterSpeed = 0.5;
+    private double outerShooterSpeed = 0.55;
     private boolean shooterActive = false;
     private WPI_TalonSRX shooterMotorMaster = null;
     private WPI_TalonSRX shooterMotorFollower = null;
@@ -56,10 +57,8 @@ public class Shooter {
 
     private Timer magazineTimer = new Timer();
     private final double MAGAZINE_TIME = 0.125;
-    private final double LAST_BALL_MAGAZINE_TIME = 0;
 
     private boolean hoodForward = false;
-    private double ballsStored = 0;
     private IntakeCase intakeCase = IntakeCase.WAITING;
     private ShootCase shootCase = ShootCase.INITIAL;
     private double setPoint = 0;
@@ -146,7 +145,6 @@ public class Shooter {
         SmartDashboard.putNumber("Shooting D Gain", kD);
         SmartDashboard.putNumber("Shooting P Gain", kP);
         //SmartDashboard.putNumber("Shooting Feed Forward", kFF);
-        SmartDashboard.putNumber("Shooting Manual Shooter Speed", manualShooterSpeed);
     }
 
     public double PIDPeriodic() {
@@ -155,7 +153,6 @@ public class Shooter {
         double i = SmartDashboard.getNumber("Shooting I Gain", 0);
         double d = SmartDashboard.getNumber("Shooting D Gain", 0);
         //double ff = SmartDashboard.getNumber("Shooting Feed Forward", 0);
-        manualShooterSpeed = SmartDashboard.getNumber("Shooting Manual Shooter Speed", 0.85);
         // if PID coefficients on SmartDashboard have changed, write new values to
         // controller
         if ((i != kI)) {
@@ -226,7 +223,6 @@ public class Shooter {
 
     ////START: Shooter
     public void shooterPeriodic() {
-        SmartDashboard.putNumber("Balls Stored", ballsStored);
         SmartDashboard.putBoolean("Override", safetyOverride);
         setShooter(shooterActive);
         shooterMotors.set(PIDPeriodic());
@@ -245,23 +241,28 @@ public class Shooter {
         }
     }
 
-    public void setShooterSpeed(double distance) {
-        double speed = 0.0;
-        //If distance is 0.0 (manual entry), sets speed to 0.85
-        if(distance != 0.0){
-            distance += 17;
-            //Sets speed based on distance from wall
-            if(distance < 52) {
-                speed = -1.32 + 0.112*distance + -0.00144*distance*distance;
-            } else {
-                speed = 0.658 + -0.00244*distance + 0.0000161*distance*distance;
-            }
-        }else{
-
-            speed = manualShooterSpeed;
+    public void setShooterSpeed(int distance) {
+        switch (distance) {
+            case 0:
+                shooterSpeed = outerShooterSpeed;
+                setHood(false);
+                break;
+            case 1:
+                shooterSpeed = innerShooterSpeed;
+                setHood(true);
+                break;
+            case 2:
+                shooterSpeed = innerShooterSpeed;
+                setHood(true);
+                break;
+            case 3:
+                shooterSpeed = outerShooterSpeed;
+                setHood(true);
+                break;
+            default:
+                System.out.println(distance + " is not a valid distance in Interstellar Accuracy!");
+                break;
         }
-
-            shooterSpeed = speed;
     }
 
     public void shoot(boolean active) {
@@ -293,13 +294,7 @@ public class Shooter {
                 case BALL_SHOOTING:
                     /*if(shootDetector.getDistance() > 7.0){
                         shootCase = ShootCase.WARMUP;
-                        if (ballsStored >= 1) {
-                            ballsStored--;
-                        }
-                        if (ballsStored < 0) {
-                            ballsStored = 0;
-                        }
-
+                      }
                     }*/
                     break;
 
@@ -315,17 +310,6 @@ public class Shooter {
         }
     }
     ////END: Shooter
-
-    /**
-     * Sets the amount of balls stored for a user-override.
-     */
-    public void setBallsStored(int ballsStored) {
-        this.ballsStored = ballsStored;
-    }
-
-    public double getBallsStored() {
-		return ballsStored;
-    }
 
     public void setOverride(boolean newOverride) {
         safetyOverride = newOverride;
@@ -368,16 +352,10 @@ public class Shooter {
         switch (intakeCase) {
             case WAITING:
                 setIntakeSpeed(1.0);
-                if (ballsStored < 5 || safetyOverride) {
-                    setMagazine(false);
-                    setIntake(true);
-                } else {
-                    setMagazine(false);
-                    setIntake(false);
-                    //disableIntake();
-                }
+                setMagazine(false);
+                setIntake(true);
 
-                if (getIntakeDectector() && ballsStored != 5) {
+                if (getIntakeDectector()) {
                     intakeCase = IntakeCase.STARTING;
                 }
 
@@ -385,38 +363,21 @@ public class Shooter {
 
             case STARTING:
                 setIntakeSpeed(1.0);
-                if (ballsStored < 4) {
-                    if (getIntakeDectector()) {
-                        setMagazine(true);
-                    } else {
-                        magazineTimer.reset();
-                        magazineTimer.start();
-                        intakeCase = IntakeCase.RUNNING;
-                    }
+                if (getIntakeDectector()) {
+                    setMagazine(true);
                 } else {
                     magazineTimer.reset();
                     magazineTimer.start();
                     intakeCase = IntakeCase.RUNNING;
                 }
-
                 break;
 
             case RUNNING:
                 setIntakeSpeed(1.0);
-                if(ballsStored < 4) {
-                    if(magazineTimer.get() < MAGAZINE_TIME) {
-                        setMagazine(true);
-                    } else {
-                        ballsStored++;
-                        intakeCase = IntakeCase.WAIT_BALL;
-                    }
+                if(magazineTimer.get() < MAGAZINE_TIME) {
+                    setMagazine(true);
                 } else {
-                    if(magazineTimer.get() < LAST_BALL_MAGAZINE_TIME) {
-                        setMagazine(true);
-                    } else {
-                        ballsStored++;
-                        intakeCase = IntakeCase.WAIT_BALL;
-                    }
+                    intakeCase = IntakeCase.WAIT_BALL;
                 }
                 break;
 
