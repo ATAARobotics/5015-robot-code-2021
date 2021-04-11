@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.vision.CameraMode;
 import frc.robot.vision.LimeLight;
@@ -24,6 +25,8 @@ public class Teleop {
 
     // Vision PID and PID values
     private boolean visionActive = false;
+    private boolean doVision = false;
+    private Timer shootTimer = new Timer();
 
     NetworkTableEntry driveTemp;
     NetworkTableEntry shootTemp;
@@ -123,24 +126,63 @@ public class Teleop {
 
                 //Set shoot speed based on button
                 boolean toShoot = false;
+                
                 if (joysticks.getManualShoot(0)){
+                    shootTimer.reset();
+                    onTargetCounter = 0;
                     shooter.setShooterSpeed(0);
                     toShoot = true;
                 } else if (joysticks.getManualShoot(1)){
+                    shootTimer.reset();
+                    onTargetCounter = 0;
                     shooter.setShooterSpeed(1);
                     toShoot = true;
                 } else if (joysticks.getManualShoot(2)){
+                    shootTimer.reset();
+                    onTargetCounter = 0;
                     shooter.setShooterSpeed(2);
                     toShoot = true;
                 } else if (joysticks.getManualShoot(3)){
+                    shootTimer.reset();
+                    onTargetCounter = 0;
                     shooter.setShooterSpeed(3);
                     toShoot = true;
                 }
-                shooter.shoot(toShoot);
+                if(toShoot) {
+                    doVision = true;
+                }
+                if(doVision) {
+                    limeLight.setCameraMode(CameraMode.Vision);
+                    if(alignment.atSetpoint()){
+                        DriverStation.reportWarning("On target", false);
+                        onTargetCounter++;
+                        // Once has been on target for 10 counts: Disable PID, Reset Camera Settings
+                        if (onTargetCounter > 10) {
+                            //Pass target distance to shooter
+                            limeLight.setCameraMode(CameraMode.Drive);
+                            shootTimer.start();
+                            System.out.println(shootTimer.get());
+                            if(shootTimer.get() < 3.0) {
+                                shooter.shoot(true);
+                            }else{
+                                shootTimer.stop();
+                                shooter.shoot(false);
+                                doVision = false;
+                            }
+                            
+                        }
+                    } else {
+                        DriverStation.reportWarning("Not on target", false);
+                        //Rotate using values from the limelight
+                        driveTrain.arcadeDrive(0.0, alignment.visionAlign());
+                    }
+                }
+                //shooter.shoot(toShoot);
 
                 //This is where the robot is driven (disabled during vision)
-				driveTrain.arcadeDrive(joysticks.getXSpeed(), joysticks.getZRotation());
-
+                if(!toShoot && !doVision) {
+				    driveTrain.arcadeDrive(joysticks.getXSpeed(), joysticks.getZRotation());
+                }
                 if(joysticks.getDiscoButton()){
                     discoOn = !discoOn;
                     if(discoOn){
